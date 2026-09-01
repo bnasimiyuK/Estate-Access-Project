@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Residents | Athi Estate Access Management System</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Navbar -->
+  <div id="header"></div>
+
+  <main class="container mx-auto p-6 relative">
+
+    <!-- Page Title -->
+    <h1 class="text-2xl font-semibold text-gray-700 mb-4">Residents Records</h1>
+
+    <!-- Sync Button -->
+    <button
+      id="syncResidentsBtn"
+      class="absolute top-6 right-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow flex items-center gap-2 transition"
+    >
+      🔄 <span>Sync Residents</span>
+    </button>
+
+    <!-- Residents Table -->
+    <div class="overflow-x-auto bg-white shadow-md rounded-lg p-4 mt-12">
+
+      <table id="residentsTable" class="min-w-full border border-gray-200 text-sm">
+        
+        <!-- TABLE HEADERS -->
+        <thead class="bg-gray-200 text-gray-700 uppercase text-xs">
+          <tr>
+            <th class="px-4 py-2 border">Resident ID</th>
+            <th class="px-4 py-2 border">User ID</th>
+            <th class="px-4 py-2 border">Resident Name</th>
+            <th class="px-4 py-2 border">National ID</th>
+            <th class="px-4 py-2 border">Phone</th>
+            <th class="px-4 py-2 border">Email</th>
+            <th class="px-4 py-2 border">House No.</th>
+            <th class="px-4 py-2 border">Court Name</th>
+            <th class="px-4 py-2 border">Occupation</th>
+            <th class="px-4 py-2 border">Date Joined</th>
+            <th class="px-4 py-2 border">Status</th>
+            <th class="px-4 py-2 border">Role Name</th>
+          </tr>
+
+          <!-- INLINE FILTER ROW -->
+          <tr class="bg-gray-100 text-gray-600 text-xs">
+            <th class="border p-1"><input data-col="0" class="filterInput w-full p-1 border rounded" placeholder="Search..." /></th>
+            <th class="border p-1"><input data-col="1" class="filterInput w-full p-1 border rounded" placeholder="Search..." /></th>
+            <th class="border p-1"><input data-col="2" class="filterInput w-full p-1 border rounded" placeholder="Search name..." /></th>
+            <th class="border p-1"><input data-col="3" class="filterInput w-full p-1 border rounded" placeholder="Search..." /></th>
+            <th class="border p-1"><input data-col="4" class="filterInput w-full p-1 border rounded" placeholder="Search phone..." /></th>
+            <th class="border p-1"><input data-col="5" class="filterInput w-full p-1 border rounded" placeholder="Search email..." /></th>
+            <th class="border p-1"><input data-col="6" class="filterInput w-full p-1 border rounded" placeholder="Search..." /></th>
+            <th class="border p-1"><input data-col="7" class="filterInput w-full p-1 border rounded" placeholder="Search..." /></th>
+            <th class="border p-1"><input data-col="8" class="filterInput w-full p-1 border rounded" placeholder="Search..." /></th>
+            <th class="border p-1"><input data-col="9" type="date" data-date="true" class="filterInput w-full p-1 border rounded" /></th>
+            <th class="border p-1">
+              <select data-col="10" class="filterInput w-full p-1 border rounded">
+                <option value="">All</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </th>
+            <th class="border p-1"><input data-col="11" class="filterInput w-full p-1 border rounded" placeholder="Search..." /></th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-100 text-gray-700">
+          <tr>
+            <td colspan="12" class="text-center py-4 text-gray-500">Loading residents...</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white text-center py-4 mt-10">
+    <p>&copy; 2025 Athi Estate Access Management System</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/navbar.js"></script>
+  <script type="module" src="js/residents.js"></script>
+  <script type="module" src="js/login.js"></script>
+
+</body>
+</html>

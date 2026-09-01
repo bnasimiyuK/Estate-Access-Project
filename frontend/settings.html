@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Settings — Athi Estate</title>
+<style>
+  :root{
+    --navy:#1b2a41;
+    --navy-dark:#131f30;
+    --gold:#e3b23c;
+    --cream:#f7f5f1;
+    --ink:#26303d;
+    --muted:#6b7280;
+    --line:#e6e2d8;
+    --card:#ffffff;
+
+    --c-general:#2b2f38;
+    --c-admins:#a0632a;
+    --c-alerts:#c21e6b;
+    --c-access:#1e7a3c;
+    --c-security:#3b3fc9;
+    --c-payments:#7b3fbf;
+    --c-backup:#2255cc;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", Helvetica, Arial, sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+  }
+
+  /* ---------- Top bar (matches existing portal) ---------- */
+  header.topbar{
+    background:#28409e;
+    color:#fff;
+    text-align:center;
+    padding:22px 20px 18px;
+  }
+  header.topbar .title{
+    font-size:26px;
+    font-weight:700;
+    margin:0 0 6px;
+  }
+  header.topbar .subtitle{
+    font-size:15px;
+    font-weight:400;
+    opacity:.95;
+  }
+  header.topbar .subtitle strong{font-weight:700;}
+  .user-pill{
+    background:#2a3b58;
+    color:var(--gold);
+    padding:8px 16px;
+    border-radius:8px;
+    font-weight:600;
+    display:flex; align-items:center; gap:8px;
+    cursor:pointer;
+  }
+
+  .page-accent{height:3px; background:linear-gradient(90deg,#3f8cff,#c21e6b); margin-bottom:28px;}
+
+  main{max-width:1100px; margin:0 auto; padding:0 28px 60px;}
+
+  .breadcrumb{font-size:12.5px; color:var(--muted); margin-top:20px; font-weight:600; letter-spacing:.02em;}
+  .breadcrumb span{margin:0 6px; opacity:.6;}
+  .page-title{font-size:26px; font-weight:700; color:var(--navy); margin:6px 0 4px;}
+  .page-sub{color:var(--muted); margin-bottom:26px; font-size:14.5px;}
+
+  /* ---------- Tabs ---------- */
+  .tabs{
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:0;
+  }
+  .tab-btn{
+    border:none; background:none; cursor:pointer;
+    padding:10px 16px; font-size:14.5px; font-weight:600;
+    color:var(--muted); border-bottom:3px solid transparent;
+    transition:color .15s, border-color .15s;
+  }
+  .tab-btn.active{color:var(--tab-color, var(--navy)); border-bottom-color:var(--tab-color, var(--navy));}
+  .tab-btn:hover{color:var(--tab-color, var(--navy));}
+
+  /* ---------- Panels ---------- */
+  .panel{display:none; animation:fade .18s ease;}
+  .panel.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+  .panel h2{
+    font-size:19px; margin:0 0 4px; color:var(--panel-color, var(--navy));
+  }
+  .panel .desc{color:var(--muted); font-size:13.5px; margin-bottom:20px;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 24px;
+    margin-bottom:18px;
+    box-shadow:0 1px 2px rgba(0,0,0,.03);
+  }
+  .card h3{margin:0 0 14px; font-size:15px; color:var(--ink);}
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 20px;}
+  @media (max-width:700px){ .grid{grid-template-columns:1fr;} }
+
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field label{font-size:13px; font-weight:600; color:var(--ink);}
+  .field .hint{font-size:12px; color:var(--muted); margin-top:2px;}
+  input[type=text], input[type=email], input[type=number], input[type=password], select{
+    padding:9px 11px; border:1px solid var(--line); border-radius:7px;
+    font-size:14px; background:#fdfdfc; color:var(--ink);
+  }
+  input:focus, select:focus{outline:2px solid var(--panel-color, var(--navy)); outline-offset:1px;}
+
+  /* toggle switch */
+  .toggle-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 0; border-bottom:1px solid var(--line);
+  }
+  .toggle-row:last-child{border-bottom:none;}
+  .toggle-row .label{font-size:14px; font-weight:600;}
+  .toggle-row .sub{font-size:12.5px; color:var(--muted); margin-top:2px;}
+  .switch{position:relative; width:42px; height:24px; flex:none;}
+  .switch input{opacity:0; width:0; height:0;}
+  .slider{
+    position:absolute; cursor:pointer; inset:0;
+    background:#d3d3d3; border-radius:24px; transition:.2s;
+  }
+  .slider::before{
+    content:""; position:absolute; height:18px; width:18px; left:3px; top:3px;
+    background:white; border-radius:50%; transition:.2s;
+  }
+  .switch input:checked + .slider{background:var(--panel-color, var(--navy));}
+  .switch input:checked + .slider::before{transform:translateX(18px);}
+
+  /* table (admins list) */
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  th, td{text-align:left; padding:10px 8px; border-bottom:1px solid var(--line);}
+  th{color:var(--muted); font-weight:600; font-size:12.5px; text-transform:uppercase; letter-spacing:.03em;}
+  .badge{
+    display:inline-block; padding:2px 9px; border-radius:20px;
+    font-size:11.5px; font-weight:700;
+  }
+  .badge.full{background:#e9f6ee; color:#1e7a3c;}
+  .badge.finance{background:#f2e9fb; color:#7b3fbf;}
+  .badge.guard{background:#eaf1ff; color:#2255cc;}
+  .row-actions button{
+    border:none; background:none; cursor:pointer; font-size:13px;
+    color:var(--panel-color, var(--navy)); font-weight:600; margin-right:10px;
+  }
+  .row-actions button.danger{color:#c21e6b;}
+
+  .btn{
+    border:none; padding:10px 18px; border-radius:8px; font-weight:700;
+    font-size:14px; cursor:pointer;
+  }
+  .btn.primary{background:var(--panel-color, var(--navy)); color:#fff;}
+  .btn.primary:hover{filter:brightness(1.08);}
+  .btn.ghost{background:none; border:1px solid var(--line); color:var(--ink);}
+  .btn.ghost:hover{background:#f2f0eb;}
+
+  .panel-footer{display:flex; justify-content:flex-end; gap:10px; margin-top:6px;}
+
+  /* toast */
+  #toast{
+    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--navy); color:#fff; padding:12px 22px; border-radius:8px;
+    font-size:14px; font-weight:600; opacity:0; pointer-events:none;
+    transition:opacity .25s, transform .25s;
+    box-shadow:0 6px 18px rgba(0,0,0,.2);
+  }
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="title">Athi Estate Access Management System</div>
+  <div class="subtitle">System Settings — Admin Dashboard</div>
+</header>
+<div class="page-accent"></div>
+
+<main>
+  <div class="breadcrumb">Admin Dashboard <span>/</span> System Settings</div>
+  <div class="page-title">System Settings</div>
+  <div class="page-sub">Manage admins, alerts, access rules, security and estate preferences.</div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="general" style="--tab-color:var(--c-general)">General</button>
+    <button class="tab-btn" data-tab="admins" style="--tab-color:var(--c-admins)">Admins &amp; Roles</button>
+    <button class="tab-btn" data-tab="alerts" style="--tab-color:var(--c-alerts)">Alerts &amp; Notifications</button>
+    <button class="tab-btn" data-tab="access" style="--tab-color:var(--c-access)">Access Control</button>
+    <button class="tab-btn" data-tab="security" style="--tab-color:var(--c-security)">Security</button>
+    <button class="tab-btn" data-tab="payments" style="--tab-color:var(--c-payments)">Payments</button>
+    <button class="tab-btn" data-tab="backup" style="--tab-color:var(--c-backup)">Backup &amp; Data</button>
+  </div>
+
+  <!-- GENERAL -->
+  <section class="panel active" id="panel-general" style="--panel-color:var(--c-general)">
+    <h2>Estate Information</h2>
+    <div class="desc">Basic details shown across the portal and on resident-facing documents.</div>
+    <div class="card">
+      <div class="grid">
+        <div class="field">
+          <label for="estateName">Estate name</label>
+          <input type="text" id="estateName" value="Athi Highway Estate">
+        </div>
+        <div class="field">
+          <label for="estateAddress">Physical address</label>
+          <input type="text" id="estateAddress" value="Athi River, Machakos County">
+        </div>
+        <div class="field">
+          <label for="estatePhone">Contact phone</label>
+          <input type="text" id="estatePhone" value="+254 700 000 000">
+        </div>
+        <div class="field">
+          <label for="estateEmail">Contact email</label>
+          <input type="email" id="estateEmail" value="admin@athiestate.co.ke">
+        </div>
+        <div class="field">
+          <label for="timezone">Time zone</label>
+          <select id="timezone"><option>Africa/Nairobi (GMT+3)</option></select>
+        </div>
+        <div class="field">
+          <label for="currency">Currency</label>
+          <select id="currency"><option>KES — Kenyan Shilling</option><option>USD — US Dollar</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button class="btn ghost">Cancel</button>
+      <button class="btn primary" data-save="Estate information">Save changes</button>
+    </div>
+  </section>
+
+  <!-- ADMINS & ROLES -->
+  <section class="panel" id="panel-admins" style="--panel-color:var(--c-admins)">
+    <h2>Admins &amp; Roles</h2>
+    <div class="desc">Control who can access the portal and what each person can do.</div>
+    <div class="card">
+      <h3>Admin accounts</h3>
+      <table id="adminsTable">
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody><!-- rows injected by JS --></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Add a new admin</h3>
+      <div class="grid">
+        <div class="field"><label for="newAdminName">Full name</label><input type="text" id="newAdminName" placeholder="e.g. John Mwangi"></div>
+        <div class="field"><label for="newAdminEmail">Email</label><input type="email" id="newAdminEmail" placeholder="name@athiestate.co.ke"></div>
+        <div class="field">
+          <label for="newAdminRole">Role</label>
+          <select id="newAdminRole">
+            <option value="full">Full Admin</option>
+            <option value="finance">Finance Admin</option>
+            <option value="guard">Security Guard</option>
+          </select>
+        </div>
+      </div>
+      <div class="panel-footer" style="margin-top:16px;">
+        <button class="btn primary" id="addAdminBtn">Add admin</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALERTS & NOTIFICATIONS -->
+  <section class="panel" id="panel-alerts" style="--panel-color:var(--c-alerts)">
+    <h2>Alerts &amp; Notifications</h2>
+    <div class="desc">Choose how the system reaches you and when it should raise an alert.</div>
+    <div class="card">
+      <h3>Notification channels</h3>
+      <div class="toggle-row">
+        <div><div class="label">SMS alerts</div><div class="sub">Send gate and payment alerts via SMS gateway</div></div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="label">Email alerts</div><div class="sub">Send daily activity summaries by email</div></div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="label">Push notifications</div><div class="sub">Notify the security dashboard in real time</div></div>
+        <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Alert thresholds</h3>
+      <div class="grid">
+        <div class="field">
+          <label for="visitorOverstay">Notify if a visitor overstays (hours)</label>
+          <input type="number" id="visitorOverstay" value="6">
+        </div>
+        <div class="field">
+          <label for="unpaidDays">Notify if dues are unpaid after (days)</label>
+          <input type="number" id="unpaidDays" value="14">
+        </div>
+        <div class="field">
+          <label for="failedAttempts">Notify after failed access attempts</label>
+          <input type="number" id="failedAttempts" value="3">
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button class="btn primary" data-save="Alert settings">Save changes</button>
+    </div>
+  </section>
+
+  <!-- ACCESS CONTROL -->
+  <section class="panel" id="panel-access" style="--panel-color:var(--c-access)">
+    <h2>Access Control Preferences</h2>
+    <div class="desc">Set the rules that govern gate passes and entry points.</div>
+    <div class="card">
+      <div class="grid">
+        <div class="field">
+          <label for="passValidity">Visitor pass validity (hours)</label>
+          <input type="number" id="passValidity" value="12">
+        </div>
+        <div class="field">
+          <label for="lockoutAttempts">Lock gate after failed attempts</label>
+          <input type="number" id="lockoutAttempts" value="5">
+        </div>
+        <div class="field">
+          <label for="gateOpen">Auto gate-open time</label>
+          <input type="text" id="gateOpen" value="06:00">
+        </div>
+        <div class="field">
+          <label for="gateClose">Auto gate-lock time</label>
+          <input type="text" id="gateClose" value="22:00">
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="toggle-row">
+        <div><div class="label">Require ID scan for all visitors</div><div class="sub">Guards must scan an ID before issuing a gate pass</div></div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="label">Allow pre-approved visitor QR codes</div><div class="sub">Residents can generate a QR pass in advance</div></div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button class="btn primary" data-save="Access control settings">Save changes</button>
+    </div>
+  </section>
+
+  <!-- SECURITY -->
+  <section class="panel" id="panel-security" style="--panel-color:var(--c-security)">
+    <h2>Security Settings</h2>
+    <div class="desc">Protect admin accounts and portal sessions.</div>
+    <div class="card">
+      <div class="grid">
+        <div class="field">
+          <label for="minPwLength">Minimum password length</label>
+          <input type="number" id="minPwLength" value="8">
+        </div>
+        <div class="field">
+          <label for="pwExpiry">Password expiry (days)</label>
+          <input type="number" id="pwExpiry" value="90">
+        </div>
+        <div class="field">
+          <label for="sessionTimeout">Session timeout (minutes)</label>
+          <input type="number" id="sessionTimeout" value="20">
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="toggle-row">
+        <div><div class="label">Two-factor authentication</div><div class="sub">Require an OTP code at admin login</div></div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="label">Log out on inactivity</div><div class="sub">Automatically end sessions after the timeout above</div></div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button class="btn primary" data-save="Security settings">Save changes</button>
+    </div>
+  </section>
+
+  <!-- PAYMENTS -->
+  <section class="panel" id="panel-payments" style="--panel-color:var(--c-payments)">
+    <h2>Payment Configuration</h2>
+    <div class="desc">Set up how the estate collects levies and service fees.</div>
+    <div class="card">
+      <div class="grid">
+        <div class="field">
+          <label for="mpesaShort">M-Pesa paybill / till number</label>
+          <input type="text" id="mpesaShort" placeholder="e.g. 400200">
+        </div>
+        <div class="field">
+          <label for="mpesaKey">M-Pesa API key</label>
+          <input type="password" id="mpesaKey" placeholder="••••••••••••">
+        </div>
+        <div class="field">
+          <label for="monthlyLevy">Monthly service levy (KES)</label>
+          <input type="number" id="monthlyLevy" value="3500">
+        </div>
+        <div class="field">
+          <label for="dueDay">Payment due day of month</label>
+          <input type="number" id="dueDay" value="5">
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button class="btn primary" data-save="Payment configuration">Save changes</button>
+    </div>
+  </section>
+
+  <!-- BACKUP & DATA -->
+  <section class="panel" id="panel-backup" style="--panel-color:var(--c-backup)">
+    <h2>Backup &amp; Data</h2>
+    <div class="desc">Keep copies of records and export data when needed.</div>
+    <div class="card">
+      <div class="toggle-row">
+        <div><div class="label">Automatic daily backup</div><div class="sub">Back up all records every night at 02:00</div></div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row" style="padding-top:16px;">
+        <div><div class="label">Manual backup</div><div class="sub">Trigger an immediate backup of all estate data</div></div>
+        <button class="btn ghost" id="backupNowBtn">Back up now</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Export data</h3>
+      <div class="panel-footer" style="justify-content:flex-start; gap:12px;">
+        <button class="btn ghost" data-export="Access logs">Export access logs (CSV)</button>
+        <button class="btn ghost" data-export="Payment records">Export payment records (CSV)</button>
+        <button class="btn ghost" data-export="Resident directory">Export resident directory (CSV)</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast"></div>
+
+<script src="js/settings.js"></script>
+</body>
+</html>

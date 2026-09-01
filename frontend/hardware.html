@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Hardware & Gate Monitoring</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            font-family: "Inter", sans-serif;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            display: inline-block;
+        }
+
+        .online-dot {
+            background: #16a34a;
+        }
+
+        .offline-dot {
+            background: #dc2626;
+        }
+
+        .warning-dot {
+            background: #f59e0b;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .dark .card {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+    </style>
+
+</head>
+
+
+<body class="bg-gray-100 min-h-screen">
+
+
+    <!-- ========================================================
+         HEADER
+         ======================================================== -->
+
+    <header class="bg-white border-b">
+
+        <div
+            class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between"
+        >
+
+            <div>
+
+                <h1 class="text-2xl font-bold text-gray-800">
+                    Hardware & Gate Monitoring
+                </h1>
+
+                <p class="text-sm text-gray-500 mt-1">
+                    Real-time monitoring of estate gate barriers and IoT devices
+                </p>
+
+            </div>
+
+
+            <div class="flex items-center gap-4">
+
+                <div class="text-right">
+
+                    <p class="text-xs text-gray-400">
+                        Last updated
+                    </p>
+
+                    <p
+                        id="lastUpdated"
+                        class="text-sm font-semibold text-gray-700"
+                    >
+                        —
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="refreshBtn"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                    Refresh
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <main class="max-w-7xl mx-auto px-6 py-6">
+
+
+        <!-- ====================================================
+             SUMMARY CARDS
+             ==================================================== -->
+
+        <section
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-7"
+        >
+
+
+            <div class="card p-5">
+
+                <p class="text-sm text-gray-500">
+                    Total Devices
+                </p>
+
+                <p
+                    id="totalDevices"
+                    class="text-3xl font-bold text-gray-800 mt-2"
+                >
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="card p-5">
+
+                <p class="text-sm text-gray-500">
+                    Online Devices
+                </p>
+
+                <p
+                    id="onlineDevices"
+                    class="text-3xl font-bold text-green-600 mt-2"
+                >
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="card p-5">
+
+                <p class="text-sm text-gray-500">
+                    Offline Devices
+                </p>
+
+                <p
+                    id="offlineDevices"
+                    class="text-3xl font-bold text-red-600 mt-2"
+                >
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="card p-5">
+
+                <p class="text-sm text-gray-500">
+                    Gate Barriers
+                </p>
+
+                <p
+                    id="totalBarriers"
+                    class="text-3xl font-bold text-blue-600 mt-2"
+                >
+                    0
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ====================================================
+             GATE BARRIERS
+             ==================================================== -->
+
+        <section class="card mb-7">
+
+            <div class="px-6 py-5 border-b">
+
+                <h2 class="text-lg font-bold text-gray-800">
+                    Gate Barriers
+                </h2>
+
+                <p class="text-sm text-gray-500">
+                    Current status of estate entry and exit barriers
+                </p>
+
+            </div>
+
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full">
+
+                    <thead class="bg-gray-50">
+
+                        <tr>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Barrier
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Gate
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Direction
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Status
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Device
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Last Heartbeat
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="barriersTable"
+                        class="divide-y"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="px-6 py-10 text-center text-gray-400"
+                            >
+                                Loading barriers...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ====================================================
+             HARDWARE DEVICES
+             ==================================================== -->
+
+        <section class="card mb-7">
+
+            <div class="px-6 py-5 border-b">
+
+                <h2 class="text-lg font-bold text-gray-800">
+                    IoT Devices
+                </h2>
+
+                <p class="text-sm text-gray-500">
+                    Connected estate hardware and monitoring devices
+                </p>
+
+            </div>
+
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full">
+
+                    <thead class="bg-gray-50">
+
+                        <tr>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Device
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Type
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Gate
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Status
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                IP Address
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Signal
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                                Last Seen
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="devicesTable"
+                        class="divide-y"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="px-6 py-10 text-center text-gray-400"
+                            >
+                                Loading devices...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ====================================================
+             RECENT EVENTS
+             ==================================================== -->
+
+        <section class="card">
+
+            <div class="px-6 py-5 border-b">
+
+                <h2 class="text-lg font-bold text-gray-800">
+                    Recent Hardware Events
+                </h2>
+
+                <p class="text-sm text-gray-500">
+                    Latest hardware status changes and device events
+                </p>
+
+            </div>
+
+
+            <div
+                id="eventsContainer"
+                class="divide-y"
+            >
+
+                <div class="p-6 text-center text-gray-400">
+                    Loading events...
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- ========================================================
+         JAVASCRIPT
+         ======================================================== -->
+
+    <script src="./js/hardware.js"></script>
+
+</body>
+
+</html>

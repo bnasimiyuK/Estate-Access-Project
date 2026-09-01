@@ -1,0 +1,94 @@
+// ==========================================
+// ✅ LOGIN.JS — Handles User Login Flow
+// ==========================================
+// Execution Order: 
+// Page loads →User submits form →Validation →Send login →Handle response →Store data →Redirect by role →Handle errors
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("✅ Login script loaded");
+
+  
+  // STEP 1: Get login form
+  const loginForm = document.getElementById("loginForm");
+  if (!loginForm) return; // Exit if form not found
+  
+  //STEP 2: Listen for form submission
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+  // STEP 3: Capture and validate input
+    const Username = document.getElementById("Username").value.trim();
+    const Password = document.getElementById("Password").value.trim();
+    if (!Username || !Password) {
+      alert("Please enter both Username and Password.");
+      return;
+    }
+    try {
+      
+ // STEP 4: Send login request to backend
+      const res = await fetch("http://localhost:4050/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Username, Password }),
+      });
+      const data = await res.json();
+      console.log("Login response from backend:", data);
+
+ // STEP 5: Check login success
+      if (!res.ok || !data.accessToken) {
+        alert(data.message || "Invalid credentials.");
+        return;
+      }
+
+ // STEP 6: Normalize and store user details
+      const fullName = data.FullName || data.fullName || data.Username;
+      const role = data.role || data.RoleName || "";
+      const roleId = data.roleId || data.RoleID || "";
+
+      localStorage.setItem("token", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem("role", role);
+      localStorage.setItem("roleId", roleId);
+      localStorage.setItem("username", fullName);
+      localStorage.setItem("fullName", fullName);
+
+      console.log("Stored:", { role, roleId, fullName });
+
+ 
+ // STEP 7: Redirect user based on role
+      // ------------------------------------------
+
+      //ADMIN
+      if (role === "Admin" || roleId == 1) {
+        console.log("Redirecting to Admin Dashboard");
+        window.location.href = "admindashboard.html";
+      }
+
+      // RESIDENT
+      else if (role === "Resident" || roleId == 2) {
+        console.log("🏡 Redirecting to Resident Portal");
+        window.location.href = "residentportal.html";
+      }
+
+      // SECURITY
+      else if (role === "Security" || roleId == 3) {
+        console.log("🛡️ Redirecting to Security Dashboard");
+        window.location.href = "securitydashboard.html";
+      }
+
+      // DEFAULT
+      else {
+        console.log("🌍 Redirecting to Home Page");
+        window.location.href = "home.html";
+      }
+
+    } catch (error) {
+   
+  // STEP 8: Handle any connection/server errors
+   
+      console.error("Login error:", error);
+      alert("Server not responding or login failed. Check backend.");
+    }
+  });
+});

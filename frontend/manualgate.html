@@ -1,0 +1,449 @@
+<!-- manualgatecontrol.html -->
+
+<div class="p-6 max-w-7xl mx-auto">
+
+```
+<!-- Page Header -->
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">
+        Manual Gate Control
+    </h1>
+
+    <p class="text-gray-500 mt-1">
+        Manually record visitor entry and exit when automatic access control is unavailable.
+    </p>
+</div>
+
+
+<!-- Status Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+    <!-- Manual Entries -->
+    <div class="bg-white rounded-xl shadow-sm border p-5">
+        <p class="text-sm text-gray-500">
+            Manual Entries Today
+        </p>
+
+        <h2
+            id="manualEntriesToday"
+            class="text-3xl font-bold text-green-600 mt-2">
+            0
+        </h2>
+    </div>
+
+
+    <!-- Manual Exits -->
+    <div class="bg-white rounded-xl shadow-sm border p-5">
+        <p class="text-sm text-gray-500">
+            Manual Exits Today
+        </p>
+
+        <h2
+            id="manualExitsToday"
+            class="text-3xl font-bold text-blue-600 mt-2">
+            0
+        </h2>
+    </div>
+
+
+    <!-- Currently Inside -->
+    <div class="bg-white rounded-xl shadow-sm border p-5">
+        <p class="text-sm text-gray-500">
+            Currently Inside
+        </p>
+
+        <h2
+            id="currentlyInside"
+            class="text-3xl font-bold text-orange-500 mt-2">
+            0
+        </h2>
+    </div>
+
+</div>
+
+
+<!-- Manual Access Form -->
+<div class="bg-white rounded-xl shadow-md border border-gray-200 mb-8">
+
+    <!-- Form Header -->
+    <div class="border-b px-6 py-4">
+
+        <h2 class="text-lg font-semibold text-gray-800">
+            Manual Gate Access
+        </h2>
+
+        <p class="text-sm text-gray-500 mt-1">
+            Enter visitor information and record gate movement manually.
+        </p>
+
+    </div>
+
+
+    <!-- Form -->
+    <form id="manualGateForm" class="p-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <!-- Visitor Name -->
+            <div>
+
+                <label
+                    for="visitorName"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    Visitor Name
+
+                </label>
+
+                <input
+                    type="text"
+                    id="visitorName"
+                    name="visitorName"
+                    placeholder="Enter visitor full name"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500 outline-none">
+
+            </div>
+
+
+            <!-- Phone Number -->
+            <div>
+
+                <label
+                    for="visitorPhone"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    Phone Number
+
+                </label>
+
+                <input
+                    type="tel"
+                    id="visitorPhone"
+                    name="visitorPhone"
+                    placeholder="07XXXXXXXX or +254XXXXXXXXX"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500 outline-none">
+
+            </div>
+
+
+            <!-- ID Number -->
+            <div>
+
+                <label
+                    for="visitorId"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    ID / Passport Number
+
+                </label>
+
+                <input
+                    type="text"
+                    id="visitorId"
+                    name="visitorId"
+                    placeholder="Enter ID or passport number"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500 outline-none">
+
+            </div>
+
+
+            <!-- House Number -->
+            <div>
+
+                <label
+                    for="houseNumber"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    House Number / Resident
+
+                </label>
+
+                <input
+                    type="text"
+                    id="houseNumber"
+                    name="houseNumber"
+                    placeholder="Example: A-12"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500 outline-none">
+
+            </div>
+
+
+            <!-- Gate -->
+            <div>
+
+                <label
+                    for="gate"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    Gate
+
+                </label>
+
+                <select
+                    id="gate"
+                    name="gate"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500 outline-none">
+
+                    <option value="">
+                        Select Gate
+                    </option>
+
+                    <option value="Main Gate">
+                        Main Gate
+                    </option>
+
+                    <option value="Service Gate">
+                        Service Gate
+                    </option>
+
+                    <option value="Residents Gate">
+                        Residents Gate
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Access Type -->
+            <div>
+
+                <label
+                    for="accessType"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    Access Type
+
+                </label>
+
+                <select
+                    id="accessType"
+                    name="accessType"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500 outline-none">
+
+                    <option value="">
+                        Select Action
+                    </option>
+
+                    <option value="ENTRY">
+                        Entry
+                    </option>
+
+                    <option value="EXIT">
+                        Exit
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- Reason -->
+        <div class="mt-5">
+
+            <label
+                for="reason"
+                class="block text-sm font-medium text-gray-700 mb-2">
+
+                Reason for Manual Access
+
+            </label>
+
+            <textarea
+                id="reason"
+                name="reason"
+                rows="4"
+                placeholder="Explain why this access is being recorded manually..."
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg
+                       focus:ring-2 focus:ring-green-500
+                       focus:border-green-500 outline-none"></textarea>
+
+        </div>
+
+
+        <!-- Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 mt-6">
+
+            <button
+                type="submit"
+                class="px-6 py-3 bg-green-600 text-white rounded-lg
+                       hover:bg-green-700 transition font-medium">
+
+                Record Gate Access
+
+            </button>
+
+
+            <button
+                type="reset"
+                class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg
+                       hover:bg-gray-300 transition font-medium">
+
+                Clear Form
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- Recent Activity -->
+<div class="bg-white rounded-xl shadow-md border border-gray-200">
+
+    <!-- Header -->
+    <div class="p-6 border-b">
+
+        <div class="flex flex-col md:flex-row md:items-center
+                    md:justify-between gap-4">
+
+            <div>
+
+                <h2 class="text-lg font-semibold text-gray-800">
+                    Recent Manual Gate Activity
+                </h2>
+
+                <p class="text-sm text-gray-500 mt-1">
+                    Monitor manually recorded visitor movements.
+                </p>
+
+            </div>
+
+
+            <!-- Search -->
+            <div>
+
+                <input
+                    type="text"
+                    id="searchManualAccess"
+                    placeholder="Search visitor..."
+                    class="px-4 py-2 border border-gray-300 rounded-lg
+                           focus:ring-2 focus:ring-green-500 outline-none">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+
+        <table class="min-w-full divide-y divide-gray-200">
+
+            <thead class="bg-gray-50">
+
+                <tr>
+
+                    <th
+                        class="px-6 py-3 text-left text-xs font-semibold
+                               text-gray-500 uppercase">
+
+                        Visitor
+
+                    </th>
+
+                    <th
+                        class="px-6 py-3 text-left text-xs font-semibold
+                               text-gray-500 uppercase">
+
+                        House
+
+                    </th>
+
+                    <th
+                        class="px-6 py-3 text-left text-xs font-semibold
+                               text-gray-500 uppercase">
+
+                        Gate
+
+                    </th>
+
+                    <th
+                        class="px-6 py-3 text-left text-xs font-semibold
+                               text-gray-500 uppercase">
+
+                        Action
+
+                    </th>
+
+                    <th
+                        class="px-6 py-3 text-left text-xs font-semibold
+                               text-gray-500 uppercase">
+
+                        Time
+
+                    </th>
+
+                    <th
+                        class="px-6 py-3 text-left text-xs font-semibold
+                               text-gray-500 uppercase">
+
+                        Status
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="manualAccessTableBody"
+                class="divide-y divide-gray-200">
+
+                <!-- Records will be inserted by manualgatecontrol.js -->
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- Empty State -->
+    <div
+        id="emptyManualAccess"
+        class="text-center py-10 text-gray-500">
+
+        <p class="text-lg font-medium">
+            No manual gate activity recorded.
+        </p>
+
+        <p class="text-sm mt-1">
+            Records will appear here after you submit the form.
+        </p>
+
+    </div>
+
+</div>
+```
+
+</div>
+<script src="js/manualgate.js"></script>
+</body>
+</html>
