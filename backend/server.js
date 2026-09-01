@@ -179,3 +179,4 @@ app.get("/api/test-email", async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
+export default app;
