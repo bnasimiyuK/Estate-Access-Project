@@ -1,4 +1,10 @@
-// 🚨 BLOCK UNAUTHORIZED ACCESS
+// ==========================================
+// frontend/scripts/residents.js
+// ==========================================
+
+// --------------------------------------------------
+// 1. AUTHENTICATION GUARD
+// --------------------------------------------------
 const savedToken = localStorage.getItem("token");
 console.log("🔍 Token on Residents Page:", savedToken);
 
@@ -7,16 +13,15 @@ if (!savedToken || savedToken === "null" || savedToken === "undefined") {
   window.location.href = "login.html";
 }
 
-// ==========================================
-// frontend/scripts/residents.js
-// ==========================================
-console.log("🏘️ residents.js loaded");
-
+// --------------------------------------------------
+// 2. MAIN RESIDENTS MODULE
+// --------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("📡 Initializing Residents Page...");
+  console.log("📡 Initializing Residents Table System...");
 
   loadResidents();
   setupFilters();
+  setupTableActionListeners();
 
   const syncBtn = document.getElementById("syncResidentsBtn");
   if (syncBtn) {
@@ -27,17 +32,37 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ==========================================
-// 🧩 Load Residents from Backend
-// ==========================================
+// Event Delegation Listener on Table
+function setupTableActionListeners() {
+  const table = document.getElementById("residentsTable");
+  if (!table) return;
+
+  table.addEventListener("click", (e) => {
+    const viewBtn = e.target.closest(".viewProfileBtn");
+    if (viewBtn) {
+      e.preventDefault();
+      const residentId = viewBtn.getAttribute("data-resident-id");
+      console.log("👆 Click detected for Resident ID:", residentId);
+
+      if (
+        residentId &&
+        residentId !== "undefined" &&
+        typeof window.openResidentProfile === "function"
+      ) {
+        window.openResidentProfile(residentId);
+      } else {
+        console.error("❌ Could not trigger profile modal.");
+      }
+    }
+  });
+}
+
+// Fetch and load data from backend server
 async function loadResidents() {
   const token = localStorage.getItem("token");
   const tbody = document.querySelector("#residentsTable tbody");
 
-  if (!tbody) {
-    console.warn("⚠️ No residents table body found in DOM.");
-    return;
-  }
+  if (!tbody) return;
 
   try {
     const response = await fetch("http://localhost:4050/api/residents/all", {
@@ -57,15 +82,15 @@ async function loadResidents() {
     if (!Array.isArray(residents) || residents.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="12" class="text-center py-4 text-gray-500">
+          <td colspan="13" class="text-center py-4 text-gray-500">
             No resident records found.
           </td>
         </tr>`;
-      console.log("⚠️ No residents returned from server.");
       return;
     }
 
     residents.forEach((r) => {
+      const resId = r.ResidentID ?? r.id ?? r.resident_id ?? "";
       const formattedDate = r.DateJoined
         ? new Date(r.DateJoined).toLocaleDateString()
         : "-";
@@ -79,14 +104,22 @@ async function loadResidents() {
 
       const row = `
         <tr class="hover:bg-gray-50 transition">
-          <td class="border px-4 py-2 text-center">${r.ResidentID ?? "-"}</td>
-          <td class="border px-4 py-2 text-center">${r.UserID ?? "-"}</td>
-          <td class="border px-4 py-2 font-medium">${r.ResidentName ?? "-"}</td>
-          <td class="border px-4 py-2">${r.NationalID ?? "-"}</td>
-          <td class="border px-4 py-2">${r.PhoneNumber ?? "-"}</td>
-          <td class="border px-4 py-2">${r.Email ?? "-"}</td>
-          <td class="border px-4 py-2 text-center">${r.HouseNumber ?? "-"}</td>
-          <td class="border px-4 py-2">${r.CourtName ?? "-"}</td>
+          <td class="border px-4 py-2 text-center">${resId || "-"}</td>
+          <td class="border px-4 py-2 text-center">${
+            r.UserID ?? r.user_id ?? "-"
+          }</td>
+          <td class="border px-4 py-2 font-medium">${
+            r.ResidentName ?? r.name ?? "-"
+          }</td>
+          <td class="border px-4 py-2">${
+            r.NationalID ?? r.national_id ?? "-"
+          }</td>
+          <td class="border px-4 py-2">${r.PhoneNumber ?? r.phone ?? "-"}</td>
+          <td class="border px-4 py-2">${r.Email ?? r.email ?? "-"}</td>
+          <td class="border px-4 py-2 text-center">${
+            r.HouseNumber ?? r.house_no ?? "-"
+          }</td>
+          <td class="border px-4 py-2">${r.CourtName ?? r.court ?? "-"}</td>
           <td class="border px-4 py-2">${r.Occupation ?? "-"}</td>
           <td class="border px-4 py-2 text-center">${formattedDate}</td>
           <td class="border px-4 py-2 text-center">
@@ -95,33 +128,36 @@ async function loadResidents() {
             </span>
           </td>
           <td class="border px-4 py-2 text-center">${r.RoleName ?? "-"}</td>
+          <td class="border px-4 py-2 text-center">
+            <button
+              type="button"
+              class="viewProfileBtn bg-blue-600 hover:bg-blue-700 text-white text-xs px-2.5 py-1 rounded shadow transition cursor-pointer"
+              data-resident-id="${resId}"
+            >
+              View
+            </button>
+          </td>
         </tr>`;
       tbody.insertAdjacentHTML("beforeend", row);
     });
 
-    console.log(`✅ Loaded ${residents.length} residents`);
-
-    applyFilters(); // ensure filters apply after loading data
-
+    applyFilters();
   } catch (err) {
     console.error("❌ Failed to load residents:", err);
     tbody.innerHTML = `
       <tr>
-        <td colspan="12" class="text-center py-4 text-red-500">
+        <td colspan="13" class="text-center py-4 text-red-500">
           Failed to load residents. Please try again later.
         </td>
       </tr>`;
   }
 }
 
-// ==========================================
-// 🔁 Sync Residents (Backend Insert Trigger)
-// ==========================================
+// Trigger backend sync process
 async function syncResidents() {
   const token = localStorage.getItem("token");
 
   try {
-    console.log("🔄 Syncing residents...");
     const res = await fetch("http://localhost:4050/api/residents/sync", {
       method: "POST",
       headers: token
@@ -135,7 +171,6 @@ async function syncResidents() {
     const data = await res.json();
 
     if (!data.success) {
-      console.error("❌ Sync error:", data);
       alert("Sync failed: " + (data.message || "Unknown error"));
       return;
     }
@@ -143,18 +178,13 @@ async function syncResidents() {
     alert(
       `Residents Synced!\n\nAdded Residents: ${data.residentsAdded}\nAdded Users: ${data.usersAdded}`
     );
-
-    console.log("🔁 Sync complete:", data);
-
   } catch (err) {
     console.error("❌ Sync error:", err);
-    alert("Failed to sync residents. Check backend.");
+    alert("Failed to sync residents. Check backend server.");
   }
 }
 
-// ==========================================
-// 🔍 Table Column Filtering System
-// ==========================================
+// Dynamic filtering setup
 function setupFilters() {
   document.querySelectorAll(".filterInput").forEach((input) => {
     input.addEventListener("input", applyFilters);
@@ -164,6 +194,8 @@ function setupFilters() {
 
 function applyFilters() {
   const table = document.getElementById("residentsTable");
+  if (!table) return;
+
   const rows = table.querySelectorAll("tbody tr");
 
   const filters = Array.from(document.querySelectorAll(".filterInput")).map(
@@ -186,7 +218,7 @@ function applyFilters() {
       if (filter.isDate) {
         const rowDate = new Date(cellText).toISOString().split("T")[0];
         if (rowDate !== filter.value) show = false;
-      } else if (!cellText.includes(filter.value)) {
+      } else if (!cellText || !cellText.includes(filter.value)) {
         show = false;
       }
     });
@@ -194,4 +226,3 @@ function applyFilters() {
     row.style.display = show ? "" : "none";
   });
 }
-
