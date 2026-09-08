@@ -4,6 +4,19 @@ console.log("👤 residents-profile.js loaded");
 
 let currentActiveResidentId = null;
 
+/**
+ * Helper to retrieve the active auth token from browser storage
+ */
+function getAuthToken() {
+  return (
+    localStorage.getItem("token") ||
+    localStorage.getItem("jwt") ||
+    localStorage.getItem("authToken") ||
+    sessionStorage.getItem("token") ||
+    sessionStorage.getItem("jwt")
+  );
+}
+
 // Ensure event listeners bind whether DOM is already loaded or loading
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", setupModalControls);
@@ -138,16 +151,16 @@ function closeModal(modal) {
 }
 
 async function fetchResidentProfileDetails(residentId) {
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
 
   try {
+    const headers = { "Content-Type": "application/json" };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`http://localhost:4050/api/residents/${residentId}`, {
-      headers: token
-        ? {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          }
-        : { "Content-Type": "application/json" },
+      headers,
     });
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -172,7 +185,7 @@ function populateProfileModal(data) {
 
   const photoImg = document.getElementById("profilePhoto");
   if (photoImg) {
-    photoImg.src = data.ProfilePhoto || data.PhotoUrl || "assets/Profile-Photo.jpeg";
+    photoImg.src = data.ProfilePhoto || data.PhotoUrl || "assets/Beverly.jpeg";
   }
 }
 
@@ -182,7 +195,14 @@ async function saveResidentProfileChanges() {
     return;
   }
 
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
+
+  if (!token) {
+    console.error("❌ Authorization token missing. Please log in again.");
+    alert("Session expired or missing auth token. Please log back in.");
+    return;
+  }
+
   const updatedPayload = {};
 
   document.querySelectorAll("[data-field]").forEach((field) => {
@@ -195,16 +215,20 @@ async function saveResidentProfileChanges() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(updatedPayload),
     });
 
-    if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(`HTTP Error ${response.status}: ${errorData.message || response.statusText}`);
+    }
+
     alert("Resident profile updated successfully!");
 
   } catch (err) {
     console.error("❌ Failed to update resident profile:", err);
-    alert("Error saving profile changes. Check backend connection.");
+    alert(`Error saving profile changes: ${err.message}`);
   }
 }
