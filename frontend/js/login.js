@@ -2,11 +2,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   if (!loginForm) return;
 
-  // Target the Express server on port 4050, on whatever host this page was
-  // loaded from (localhost, a LAN IP, or eventually a real domain). This
-  // avoids hardcoding 'localhost', which breaks when accessed from a phone
-  // or any device other than the machine running the server.
-  const API_URL = `http://${window.location.hostname}:4050`;
+  // Choose the right backend depending on where this page is being loaded from:
+  // - Deployed (GitHub Pages, or any real domain) -> always use the live Vercel backend,
+  //   so ANY device (phone, laptop, anywhere with internet) can log in
+  // - Opened locally (localhost or a LAN IP like 192.168.x.x) -> use the local dev
+  //   server, so phones on the same WiFi can still hit your laptop during development
+  const DEPLOYED_API_URL = "https://estate-access-project.vercel.app";
+
+  const isLocalHost =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    /^192\.168\.\d{1,3}\.\d{1,3}$/.test(window.location.hostname) ||
+    /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(window.location.hostname);
+
+  const API_URL = isLocalHost
+    ? `http://${window.location.hostname}:4050`
+    : DEPLOYED_API_URL;
 
   // Map roles to dashboard pages
   const ROLES = {
