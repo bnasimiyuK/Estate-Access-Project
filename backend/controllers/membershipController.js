@@ -8,7 +8,7 @@ dotenv.config();
 
 const dbConfig = {
   user: process.env.DB_USER || "Beverly",
-  password: process.env.DB_PASSWORD || "Bev@12345678",
+  password: process.env.DB_PASSWORD || "Bev@Kon2023",
   server: process.env.DB_SERVER || "localhost",
   database: process.env.DB_NAME || "EstateAccessManagementSystem",
   options: { encrypt: false, trustServerCertificate: true },

@@ -5,7 +5,7 @@ dotenv.config();
 
 const dbConfig = {
   user: process.env.DB_USER || "Beverly", // SQL Server username
-  password: process.env.DB_PASSWORD || "Bev@12345678", // SQL Server password
+  password: process.env.DB_PASSWORD || "Bev@Kon2023", // SQL Server password
   database: process.env.DB_NAME || "EstateAccessManagementSystem", // Database name
   server: process.env.DB_SERVER || "localhost\\Beverly", // SQL Server host
   pool: {
