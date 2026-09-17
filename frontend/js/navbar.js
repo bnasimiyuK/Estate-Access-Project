@@ -1,19 +1,21 @@
-// ✅ navbar.js — Unified Left-Sliding Sidebars for All Menus
+// ✅ navbar.js — Unified Left-Sliding Sidebars for All Menus & Athi Estate Marketplace
 document.addEventListener("DOMContentLoaded", async () => {
     const headerContainer = document.getElementById("header");
     if (!headerContainer) return;
 
     try {
-        // 💡 FIX APPLIED: Changed path to "partials/header.html" 
-        // to resolve the 404 Not Found error, assuming the file is in a 'partials' folder.
+        // 💡 Fetch partial header template
         const res = await fetch("partials/header.html"); 
         
         if (!res.ok) throw new Error(`Header not found. Status: ${res.status}`);
 
         headerContainer.innerHTML = await res.text();
         
-        // Ensure initializeNavbar runs after the DOM is fully updated
-        setTimeout(() => initializeNavbar(), 50); // Reduced delay for faster UI load
+        // Ensure UI functions run after the DOM is populated
+        setTimeout(() => {
+            initializeNavbar();
+            renderAthiConnectSidebar();
+        }, 50); 
     } catch (err) {
         console.error("❌ Navbar load failed:", err);
     }
@@ -59,15 +61,12 @@ function initializeNavbar() {
 
         // 🟢 ADMIN
         if (role === "admin" || roleId === 1) {
-            // Ensure elements exist before modifying classList
             adminMenu?.classList.remove("hidden");
-            residentMenu?.classList.remove("hidden");
-            securityMenu?.classList.remove("hidden");
+            residentMenu?.classList.add("hidden");
+            securityMenu?.classList.add("hidden");
             
-            // 💡 FIX 2: Set text for the menu button if it's empty
             if (residentMenu) residentMenu.textContent = "Resident Dashboard";
             if (securityMenu) securityMenu.textContent = "Security Dashboard";
-
 
             adminMenu?.addEventListener("click", () => openSidebar("Admin Dashboard", [
                 { name: "Dashboard Overview", href: "dashboardoverview.html" },
@@ -82,7 +81,7 @@ function initializeNavbar() {
             residentMenu?.addEventListener("click", () => openSidebar("Resident Dashboard", [
                 { name: "Dashboard Overview", href: "residentdashboardoverview.html" },
                 { name: "Payments", href: "payments.html" },
-                {name: "Resident Profiles", href: "residents.html"},
+                { name: "Resident Profiles", href: "residents.html" },
                 { name: "Visitors Pre-Approval", href: "visitorsaccess.html" },
                 { name: "Access Logs", href: "accesslogs.html" },
                 { name: "Notifications", href: "notifications.html" },
@@ -95,7 +94,7 @@ function initializeNavbar() {
                 { name: "Manual Gate Control", href: "manualgatecontrol.html" },
                 { name: "Resident Management", href: "residents.html" },
                 { name: "Payment Verification", href: "payments.html" },
-                { name: "Reports & Analytics", href: "reportsanalysis.html"},
+                { name: "Reports & Analytics", href: "reportsanalysis.html" },
                 { name: "Notification & Alerts", href: "notoficationalerts.html" },
                 { name: "Security & Role Management", href: "securitydashboard" },
                 { name: "System Integration", href: "systemintegration.html" },
@@ -106,13 +105,12 @@ function initializeNavbar() {
         else if (role.includes("resident") || roleId === 2) {
             residentMenu?.classList.remove("hidden");
             
-            // 💡 FIX 2: Set text for the menu button
             if (residentMenu) residentMenu.textContent = "Resident Dashboard";
             
             residentMenu?.addEventListener("click", () => openSidebar("Resident Dashboard", [
                 { name: "Dashboard Overview", href: "residentdashboardoverview.html" },
                 { name: "Payments", href: "payments.html" },
-                {name: "Resident Profiles", href: "residents.html"},
+                { name: "Resident Profiles", href: "residents.html" },
                 { name: "Visitors Pre-Approval", href: "visitorsaccess.html" },
                 { name: "Access Logs", href: "accesslogs.html" },
                 { name: "Notifications", href: "notifications.html" },
@@ -123,7 +121,6 @@ function initializeNavbar() {
         else if (role.includes("security") || roleId === 3) {
             securityMenu?.classList.remove("hidden");
             
-            // 💡 FIX 2: Set text for the menu button
             if (securityMenu) securityMenu.textContent = "Security Dashboard";
             
             securityMenu?.addEventListener("click", () => openSidebar("Security Dashboard", [
@@ -133,7 +130,7 @@ function initializeNavbar() {
                 { name: "Manual Gate Control", href: "manualgate.html" },
                 { name: "Resident Management", href: "residents.html" },
                 { name: "Payment Verification", href: "payments.html" },
-                { name: "Reports & Analytics", href: "reportsanalysis.html"},
+                { name: "Reports & Analytics", href: "reportsanalysis.html" },
                 { name: "Notification & Alerts", href: "notificationalerts.html" },
                 { name: "Security & Role Management", href: "securitydashboard" },
                 { name: "System Integration", href: "systemintegration.html" },
@@ -142,7 +139,7 @@ function initializeNavbar() {
 
         setupDropdown();
         setupLogoutButton();
-        setupServicesSidebar();
+        setupServicesSidebarToggle();
     } else {
         // 🔴 Not logged in
         profileMenu?.classList.add("hidden");
@@ -154,7 +151,82 @@ function initializeNavbar() {
 }
 
 /* ======================================================
-    🧭 Shared Sidebar Handler
+    🛒 Render Athi Estate Connect Marketplace Sidebar Data
+====================================================== */
+function renderAthiConnectSidebar() {
+    const sidebarContainer = document.getElementById("servicesSidebarLinks");
+    if (!sidebarContainer) return;
+
+    const navigationData = [
+        {
+            category: "Core Navigation",
+            items: [
+                { name: "Dashboard", href: "residentdashboardoverview.html", icon: "🏠" },
+                { name: "Estate Announcements", href: "announcements.html", icon: "📢" }
+            ]
+        },
+        {
+            category: "Community Services & Marketplace",
+            items: [
+                { name: "Find Services", href: "services-search.html", icon: "🔍" },
+                { name: "Home & Maintenance", href: "category-maintenance.html", icon: "🔧" },
+                { name: "Food & Groceries", href: "category-food.html", icon: "🥬" },
+                { name: "Shopping & Retail", href: "category-shopping.html", icon: "🛒" },
+                { name: "Transport & Logistics", href: "category-transport.html", icon: "🚗" },
+                { name: "Personal Care", href: "category-personal.html", icon: "💇" },
+                { name: "Education & Care", href: "category-education.html", icon: "🏫" },
+                { name: "My Bookings & Quotes", href: "bookings.html", icon: "📅" },
+                { name: "Referrals & Reviews", href: "referrals.html", icon: "⭐" }
+            ]
+        },
+        {
+            category: "Provider Portal",
+            items: [
+                { name: "Provider Dashboard", href: "provider-dashboard.html", icon: "📊" },
+                { name: "Manage Services & Fees", href: "provider-services.html", icon: "🛠️" },
+                { name: "Register Business / Provider", href: "provider-register.html", icon: "📋" }
+            ]
+        },
+        {
+            category: "Access & Gate Control",
+            items: [
+                { name: "Visitor Access Pre-Approval", href: "visitorsaccess.html", icon: "🎫" },
+                { name: "Generate Visitor Pass", href: "visitorpass.html", icon: "📱" }
+            ]
+        },
+        {
+            category: "Payments & Financials",
+            items: [
+                { name: "Payment Status & Invoices", href: "payments.html", icon: "💳" }
+            ]
+        },
+        {
+            category: "Admin & Governance",
+            items: [
+                { name: "Provider Verification (Admin)", href: "admin-verification.html", icon: "🟢" },
+                { name: "Complaints Management", href: "admin-complaints.html", icon: "🚨" },
+                { name: "Demand Analytics & Reports", href: "admin-reports.html", icon: "📊" }
+            ]
+        }
+    ];
+
+    sidebarContainer.innerHTML = navigationData.map(group => `
+        <div class="mb-4">
+            <h3 class="px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                ${group.category}
+            </h3>
+            ${group.items.map(item => `
+                <a href="${item.href}" class="flex items-center px-6 py-2.5 text-sm text-gray-200 hover:bg-slate-800 hover:text-yellow-400 transition-colors duration-150">
+                    <span class="mr-3">${item.icon}</span>
+                    <span>${item.name}</span>
+                </a>
+            `).join('')}
+        </div>
+    `).join('');
+}
+
+/* ======================================================
+    🧭 Shared Sidebar Handlers & Open/Close Toggles
 ====================================================== */
 function openSidebar(title, links) {
     const sidebar = document.getElementById("sidebarMenu");
@@ -190,33 +262,16 @@ function closeSidebar() {
     overlay.classList.add("hidden");
 }
 
-/* ======================================================
-    🟡 Services Sidebar (Left Slide)
-====================================================== */
-function setupServicesSidebar() {
+function setupServicesSidebarToggle() {
     const btn = document.getElementById("servicesBtn");
     const sidebar = document.getElementById("servicesSidebar");
     const overlay = document.getElementById("sidebarOverlay");
-    const linksEl = document.getElementById("servicesSidebarLinks");
     const closeBtn = document.getElementById("closeServicesSidebar");
 
-    if (!btn || !sidebar || !overlay || !linksEl || !closeBtn) return; // Added null checks here
-
-    const links = [
-        { name: "Visitor Pre-Approval", href: "visitor-pre-approval.html" },
-        { name: "Payment Status", href: "payments.html" },
-        { name: "Estate Announcements", href: "estate-announcements.html" },
-        { name: "Resident Portal", href: "resident-portal.html" },
-        { name: "Generate Visitor Pass", href: "generate-access-pass.html" },
-    ];
+    if (!btn || !sidebar || !overlay || !closeBtn) return;
 
     btn.addEventListener("click", () => {
-        linksEl.innerHTML = links
-            .map(
-                (l) =>
-                    `<a href="${l.href}" class="block px-6 py-3 text-gray-200 hover:bg-gray-700 hover:text-yellow-400 transition">${l.name}</a>`
-            )
-            .join("");
+        renderAthiConnectSidebar(); // Re-render to ensure content is fresh
         sidebar.classList.remove("-translate-x-full");
         overlay.classList.remove("hidden");
     });
@@ -238,11 +293,10 @@ function setupDropdown() {
     const menu = document.getElementById("dropdownMenu");
     const parent = document.getElementById("profileMenu");
 
-    if (!btn || !menu || !parent) return; // Added check for parent (profileMenu)
+    if (!btn || !menu || !parent) return;
 
     btn.addEventListener("click", () => menu.classList.toggle("hidden"));
     document.addEventListener("click", (e) => {
-        // Check if the click is outside the entire profile menu wrapper
         if (!parent.contains(e.target)) menu.classList.add("hidden"); 
     });
 }

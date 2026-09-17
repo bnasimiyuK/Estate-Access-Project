@@ -1,0 +1,510 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Category Maintenance | Athi Estate Connect</title>
+
+    <meta
+        name="description"
+        content="Manage service categories for Athi Estate Connect."
+    >
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <link rel="stylesheet" href="css/category-maintenance.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="top-header">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+
+            <div>
+                <h1>Athi Estate Connect</h1>
+                <span>Community Services Marketplace</span>
+            </div>
+
+        </div>
+
+        <div class="admin-area">
+
+            <div class="admin-name">
+                <strong id="adminName">Administrator</strong>
+                <small>System Administrator</small>
+            </div>
+
+            <div class="admin-avatar">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN PAGE -->
+    <main class="page">
+
+        <!-- BREADCRUMB -->
+        <div class="breadcrumb">
+
+            <a href="admin-dashboard.html">
+                Admin Dashboard
+            </a>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+            <span>Services</span>
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+            <span>Category Maintenance</span>
+
+        </div>
+
+
+        <!-- PAGE HEADER -->
+        <div class="page-heading">
+
+            <div>
+
+                <h2>Category Maintenance</h2>
+
+                <p>
+                    Create and manage service categories available
+                    on Athi Estate Connect.
+                </p>
+
+            </div>
+
+            <button
+                type="button"
+                class="btn-primary"
+                id="addCategoryBtn"
+            >
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Category
+
+            </button>
+
+        </div>
+
+
+        <!-- SUMMARY CARDS -->
+        <section class="summary-grid">
+
+            <div class="summary-card">
+
+                <div>
+                    <h4>Total Categories</h4>
+                    <strong id="totalCategories">0</strong>
+                </div>
+
+                <div class="summary-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div>
+                    <h4>Active Categories</h4>
+                    <strong id="activeCategories">0</strong>
+                </div>
+
+                <div class="summary-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div>
+                    <h4>Inactive Categories</h4>
+                    <strong id="inactiveCategories">0</strong>
+                </div>
+
+                <div class="summary-icon">
+                    <i class="fa-solid fa-circle-pause"></i>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div>
+                    <h4>Total Services</h4>
+                    <strong id="totalServices">0</strong>
+                </div>
+
+                <div class="summary-icon">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CATEGORY MANAGEMENT PANEL -->
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h3>Service Categories</h3>
+
+                    <p>
+                        Manage categories used by service providers
+                        and residents.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- TOOLBAR -->
+            <div class="toolbar">
+
+                <div class="search-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="categorySearch"
+                        placeholder="Search category or description..."
+                    >
+
+                </div>
+
+
+                <select id="statusFilter">
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option value="Active">
+                        Active
+                    </option>
+
+                    <option value="Inactive">
+                        Inactive
+                    </option>
+
+                </select>
+
+
+                <select id="sortFilter">
+
+                    <option value="name">
+                        Name A-Z
+                    </option>
+
+                    <option value="services">
+                        Most Services
+                    </option>
+
+                    <option value="newest">
+                        Newest
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- CATEGORY TABLE -->
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Icon</th>
+
+                            <th>Category</th>
+
+                            <th>Description</th>
+
+                            <th>Services</th>
+
+                            <th>Status</th>
+
+                            <th>Created</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="categoryTableBody">
+                    </tbody>
+
+                </table>
+
+
+                <!-- EMPTY STATE -->
+                <div
+                    class="empty-state"
+                    id="emptyState"
+                >
+
+                    <i class="fa-solid fa-layer-group"></i>
+
+                    <h4>No categories found</h4>
+
+                    <p>
+                        No service categories match your search
+                        or selected filter.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ADD / EDIT CATEGORY MODAL -->
+    <div
+        class="modal-overlay"
+        id="categoryModal"
+    >
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <h3 id="modalTitle">
+                    Add Service Category
+                </h3>
+
+                <button
+                    type="button"
+                    class="close-modal"
+                    id="closeModal"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+
+            <form id="categoryForm">
+
+                <div class="modal-body">
+
+                    <input
+                        type="hidden"
+                        id="categoryId"
+                    >
+
+
+                    <!-- CATEGORY NAME -->
+                    <div class="form-group">
+
+                        <label for="categoryName">
+                            Category Name *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="categoryName"
+                            placeholder="e.g. Plumbing"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+                    <div class="form-group">
+
+                        <label for="categoryDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="categoryDescription"
+                            placeholder="Describe this service category..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <!-- ICON -->
+                        <div class="form-group">
+
+                            <label for="categoryIcon">
+                                Category Icon
+                            </label>
+
+                            <select id="categoryIcon">
+
+                                <option value="fa-layer-group">
+                                    General
+                                </option>
+
+                                <option value="fa-broom">
+                                    Cleaning
+                                </option>
+
+                                <option value="fa-faucet-drip">
+                                    Plumbing
+                                </option>
+
+                                <option value="fa-bolt">
+                                    Electrical
+                                </option>
+
+                                <option value="fa-shield-halved">
+                                    Security
+                                </option>
+
+                                <option value="fa-seedling">
+                                    Gardening
+                                </option>
+
+                                <option value="fa-spa">
+                                    Beauty & Wellness
+                                </option>
+
+                                <option value="fa-car">
+                                    Transport
+                                </option>
+
+                                <option value="fa-screwdriver-wrench">
+                                    Repairs
+                                </option>
+
+                                <option value="fa-utensils">
+                                    Food & Catering
+                                </option>
+
+                                <option value="fa-book-open">
+                                    Tutoring
+                                </option>
+
+                                <option value="fa-laptop">
+                                    Technology
+                                </option>
+
+                                <option value="fa-shirt">
+                                    Laundry
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- STATUS -->
+                        <div class="form-group">
+
+                            <label for="categoryStatus">
+                                Status
+                            </label>
+
+                            <select id="categoryStatus">
+
+                                <option value="Active">
+                                    Active
+                                </option>
+
+                                <option value="Inactive">
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MODAL FOOTER -->
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn-secondary"
+                        id="cancelModal"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn-primary"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Save Category
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOAST MESSAGE -->
+    <div
+        class="toast"
+        id="toast"
+    ></div>
+
+
+    <!-- JAVASCRIPT FILE ONLY -->
+    <script src="js/category-maintenance.js"></script>
+
+</body>
+
+</html>
+```

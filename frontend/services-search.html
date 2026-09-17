@@ -1,0 +1,864 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Search Services | Athi Estate Connect</title>
+
+    <meta
+        name="description"
+        content="Find trusted and verified service providers within Athi Highway Estate."
+    >
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button,
+        input,
+        select {
+            font-family: inherit;
+        }
+
+        /* ================= HEADER ================= */
+
+        .top-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: #166534;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            color: #166534;
+        }
+
+        .brand span {
+            display: block;
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .header-link {
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .header-link:hover {
+            color: #166534;
+        }
+
+        .profile-btn {
+            border: 0;
+            background: #f0fdf4;
+            color: #166534;
+            padding: 9px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            background: linear-gradient(135deg, #14532d, #166534);
+            color: white;
+            padding: 45px 30px;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .hero h2 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .hero p {
+            color: #dcfce7;
+            margin-bottom: 25px;
+        }
+
+        .search-main {
+            background: white;
+            padding: 8px;
+            border-radius: 12px;
+            display: flex;
+            max-width: 850px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .search-main input {
+            flex: 1;
+            border: 0;
+            outline: none;
+            padding: 14px;
+            font-size: 15px;
+            color: #374151;
+        }
+
+        .search-main button {
+            border: 0;
+            background: #f59e0b;
+            color: white;
+            padding: 0 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .search-main button:hover {
+            background: #d97706;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumb {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb a {
+            color: #166534;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 270px 1fr;
+            gap: 25px;
+        }
+
+        /* ================= FILTERS ================= */
+
+        .filters {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+            border: 1px solid #e5e7eb;
+        }
+
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filters-header h3 {
+            font-size: 17px;
+        }
+
+        .clear-btn {
+            border: 0;
+            background: transparent;
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .filter-group {
+            margin-bottom: 22px;
+        }
+
+        .filter-group label.title {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        .filter-group select,
+        .filter-group input[type="number"] {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            padding: 10px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: #166534;
+        }
+
+        .price-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 9px 0;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .checkbox-item input {
+            accent-color: #166534;
+        }
+
+        /* ================= RESULTS ================= */
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            gap: 15px;
+        }
+
+        .results-header h3 {
+            font-size: 20px;
+        }
+
+        .results-count {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        .sort-select {
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 7px;
+            padding: 9px 12px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            transition: 0.2s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .service-image {
+            height: 145px;
+            background: #dcfce7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #166534;
+            font-size: 42px;
+        }
+
+        .service-content {
+            padding: 17px;
+        }
+
+        .service-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .service-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .verified {
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 10px;
+            white-space: nowrap;
+            height: fit-content;
+        }
+
+        .provider {
+            color: #6b7280;
+            font-size: 12px;
+            margin: 6px 0;
+        }
+
+        .rating {
+            color: #f59e0b;
+            font-size: 13px;
+        }
+
+        .rating span {
+            color: #6b7280;
+            margin-left: 4px;
+        }
+
+        .description {
+            color: #4b5563;
+            font-size: 12px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .service-details {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 12px;
+            margin-top: 10px;
+        }
+
+        .price {
+            color: #166534;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .location {
+            color: #6b7280;
+            font-size: 11px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 9px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #166534;
+            color: #166534;
+        }
+
+        .btn-primary {
+            background: #166534;
+            border: 1px solid #166534;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.88;
+        }
+
+        /* ================= EMPTY STATE ================= */
+
+        .empty-state {
+            background: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            display: none;
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            color: #9ca3af;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h4 {
+            margin-bottom: 6px;
+        }
+
+        .empty-state p {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #111827;
+            color: #d1d5db;
+            margin-top: 50px;
+            padding: 35px 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        footer h4 {
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        footer p {
+            font-size: 12px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 850px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                order: 1;
+            }
+
+            .results {
+                order: 2;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .top-header {
+                padding: 12px 15px;
+            }
+
+            .header-link {
+                display: none;
+            }
+
+            .hero {
+                padding: 30px 15px;
+            }
+
+            .hero h2 {
+                font-size: 24px;
+            }
+
+            .search-main {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .search-main button {
+                padding: 12px;
+            }
+
+            .results-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="top-header">
+
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-house-circle-check"></i>
+            </div>
+
+            <div>
+                <h1>Athi Estate Connect</h1>
+                <span>Community Services Marketplace</span>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <a href="services.html" class="header-link">
+                <i class="fa-solid fa-compass"></i>
+                Browse Services
+            </a>
+
+            <a href="my-bookings.html" class="header-link">
+                <i class="fa-solid fa-calendar-check"></i>
+                My Bookings
+            </a>
+
+            <button class="profile-btn" id="profileBtn">
+                <i class="fa-solid fa-user"></i>
+                My Account
+            </button>
+        </div>
+
+    </header>
+
+
+    <!-- HERO -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <h2>Find Services Near You</h2>
+
+            <p>
+                Discover trusted service providers within Athi Highway Estate.
+            </p>
+
+            <form class="search-main" id="searchForm">
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    placeholder="Search for a service, provider or keyword..."
+                    autocomplete="off"
+                >
+
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Search
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="container">
+
+        <div class="breadcrumb">
+            <a href="dashboard.html">Dashboard</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            Services
+            <i class="fa-solid fa-chevron-right"></i>
+            Search
+        </div>
+
+
+        <div class="layout">
+
+            <!-- FILTER SIDEBAR -->
+            <aside class="filters">
+
+                <div class="filters-header">
+                    <h3>
+                        <i class="fa-solid fa-filter"></i>
+                        Filters
+                    </h3>
+
+                    <button class="clear-btn" id="clearFilters">
+                        Clear All
+                    </button>
+                </div>
+
+
+                <!-- CATEGORY -->
+                <div class="filter-group">
+
+                    <label class="title" for="categoryFilter">
+                        Service Category
+                    </label>
+
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="Cleaning">Cleaning</option>
+                        <option value="Plumbing">Plumbing</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Security">Security</option>
+                        <option value="Gardening">Gardening</option>
+                        <option value="Beauty">Beauty & Wellness</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Repairs">Repairs & Maintenance</option>
+                        <option value="Food">Food & Catering</option>
+                        <option value="Tutoring">Tutoring</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Laundry">Laundry</option>
+                    </select>
+
+                </div>
+
+
+                <!-- COURT -->
+                <div class="filter-group">
+
+                    <label class="title" for="courtFilter">
+                        Court / Location
+                    </label>
+
+                    <select id="courtFilter">
+
+                        <option value="">All Locations</option>
+
+                        <option value="Riverside">
+                            Riverside Court
+                        </option>
+
+                        <option value="Phase I">
+                            Phase I
+                        </option>
+
+                        <option value="Phase II">
+                            Phase II
+                        </option>
+
+                        <option value="Central">
+                            Central Area
+                        </option>
+
+                        <option value="Estate-wide">
+                            Estate-wide
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- PRICE -->
+                <div class="filter-group">
+
+                    <label class="title">
+                        Price Range (KES)
+                    </label>
+
+                    <div class="price-inputs">
+
+                        <input
+                            type="number"
+                            id="minPrice"
+                            placeholder="Min"
+                            min="0"
+                        >
+
+                        <input
+                            type="number"
+                            id="maxPrice"
+                            placeholder="Max"
+                            min="0"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- VERIFIED -->
+                <div class="filter-group">
+
+                    <label class="title">
+                        Provider Status
+                    </label>
+
+                    <label class="checkbox-item">
+                        <input
+                            type="checkbox"
+                            id="verifiedFilter"
+                        >
+                        Verified providers only
+                    </label>
+
+                </div>
+
+
+                <!-- AVAILABILITY -->
+                <div class="filter-group">
+
+                    <label class="title">
+                        Availability
+                    </label>
+
+                    <label class="checkbox-item">
+                        <input
+                            type="checkbox"
+                            id="availableFilter"
+                        >
+                        Available today
+                    </label>
+
+                </div>
+
+            </aside>
+
+
+            <!-- RESULTS -->
+            <section class="results">
+
+                <div class="results-header">
+
+                    <div>
+                        <h3>Available Services</h3>
+
+                        <p class="results-count" id="resultsCount">
+                            Showing services...
+                        </p>
+                    </div>
+
+                    <select class="sort-select" id="sortFilter">
+
+                        <option value="recommended">
+                            Recommended
+                        </option>
+
+                        <option value="rating">
+                            Highest Rated
+                        </option>
+
+                        <option value="price-low">
+                            Price: Low to High
+                        </option>
+
+                        <option value="price-high">
+                            Price: High to Low
+                        </option>
+
+                        <option value="name">
+                            Name A-Z
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    class="services-grid"
+                    id="servicesGrid"
+                ></div>
+
+
+                <div
+                    class="empty-state"
+                    id="emptyState"
+                >
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <h4>No services found</h4>
+
+                    <p>
+                        Try changing your search terms or filters.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-content">
+
+            <div>
+                <h4>Athi Estate Connect</h4>
+                <p>
+                    Connecting residents with trusted local services.
+                </p>
+            </div>
+
+            <div>
+                <p>
+                    © 2026 Athi Highway Estate
+                </p>
+                <p>
+                    Community Services Marketplace
+                </p>
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="services-search.js"></script>
+
+</body>
+</html>
+```
