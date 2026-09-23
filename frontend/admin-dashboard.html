@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | Athi Soko Connect</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Poppins", sans-serif; background: #f4f7fb; color: #1f2937; }
+a { text-decoration: none; color: inherit; }
+.top-header { background: #0f172a; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; color: #fff; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon { width: 42px; height: 42px; border-radius: 10px; background: #1d4ed8; color: #fff; display: flex; align-items: center; justify-content: center; }
+.brand h1 { font-size: 17px; }
+.brand span { display: block; font-size: 11px; color: #94a3b8; }
+.header-link { color: #cbd5e1; font-size: 13px; }
+.container { max-width: 1150px; margin: 26px auto; padding: 0 20px; }
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
+.stat-card { background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; }
+.stat-card .num { font-size: 24px; font-weight: 700; color: #1d4ed8; }
+.stat-card .label { font-size: 12px; color: #6b7280; margin-top: 4px; }
+.tabs { display: flex; gap: 6px; margin-bottom: 18px; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }
+.tab-btn { border: 0; background: none; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; }
+.tab-btn.active { color: #1d4ed8; border-color: #1d4ed8; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.card { background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; padding: 20px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 10px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+th { color: #6b7280; font-size: 11px; text-transform: uppercase; }
+.badge { padding: 4px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.badge-verified, .badge-completed, .badge-resolved { background: #dcfce7; color: #166534; }
+.badge-pending { background: #fef9c3; color: #854d0e; }
+.badge-underreview, .badge-accepted { background: #dbeafe; color: #1e3a8a; }
+.badge-suspended, .badge-cancelled, .badge-open { background: #fee2e2; color: #991b1b; }
+select.status-select { border: 1px solid #d1d5db; border-radius: 6px; padding: 6px 8px; font-size: 12px; }
+.btn { padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; border: 1px solid #d1d5db; background: #fff; }
+.stars { color: #f59e0b; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header class="top-header">
+    <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div><h1>Athi Soko Connect</h1><span>Estate Admin Dashboard</span></div>
+    </div>
+    <a href="admin-reports.html" class="header-link"><i class="fa-solid fa-chart-line"></i> Reports</a>
+</header>
+
+<main class="container">
+
+    <div class="stat-row" id="statRow"></div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="providers">Provider Verification</button>
+        <button class="tab-btn" data-tab="bookings">Bookings</button>
+        <button class="tab-btn" data-tab="complaints">Complaints</button>
+        <button class="tab-btn" data-tab="referrals">Referrals</button>
+        <button class="tab-btn" data-tab="performance">Provider Performance</button>
+    </div>
+
+    <!-- PROVIDER VERIFICATION -->
+    <div class="tab-panel active" id="tab-providers">
+        <div class="card">
+            <table>
+                <thead><tr><th>Business</th><th>Category</th><th>Court</th><th>Status</th><th>Update Status</th></tr></thead>
+                <tbody id="providersBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div class="tab-panel" id="tab-bookings">
+        <div class="card">
+            <table>
+                <thead><tr><th>Resident</th><th>Service</th><th>Provider</th><th>Date</th><th>Status</th></tr></thead>
+                <tbody id="bookingsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- COMPLAINTS -->
+    <div class="tab-panel" id="tab-complaints">
+        <div class="card">
+            <table>
+                <thead><tr><th>Resident</th><th>Provider</th><th>Category</th><th>Description</th><th>Status</th><th></th></tr></thead>
+                <tbody id="complaintsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- REFERRALS -->
+    <div class="tab-panel" id="tab-referrals">
+        <div class="card">
+            <table>
+                <thead><tr><th>Provider</th><th>Referred By</th><th>Referred Resident</th><th>Contact</th><th>Status</th></tr></thead>
+                <tbody id="referralsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PERFORMANCE -->
+    <div class="tab-panel" id="tab-performance">
+        <div class="card">
+            <table>
+                <thead><tr><th>Provider</th><th>Rating</th><th>Total Bookings</th><th>Completed</th><th>Complaints</th></tr></thead>
+                <tbody id="performanceBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+<script src="js/admin-dashboard.js"></script>
+</body>
+</html>
