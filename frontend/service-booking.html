@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Service | Athi Soko Connect</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Poppins", sans-serif; background: #f4f7fb; color: #1f2937; }
+a { text-decoration: none; color: inherit; }
+.top-header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 15px 30px; display: flex; align-items: center; gap: 12px; }
+.brand-icon { width: 40px; height: 40px; border-radius: 10px; background: #1e3a8a; color: #fff; display: flex; align-items: center; justify-content: center; }
+.container { max-width: 600px; margin: 34px auto; padding: 0 20px; }
+.card { background: #fff; border-radius: 14px; border: 1px solid #e5e7eb; padding: 28px; }
+.service-summary { display: flex; align-items: center; gap: 14px; background: #eff6ff; border-radius: 10px; padding: 14px; margin-bottom: 22px; }
+.service-summary i { font-size: 26px; color: #1d4ed8; }
+.service-summary .name { font-weight: 600; font-size: 14px; }
+.service-summary .provider { font-size: 12px; color: #6b7280; }
+.field { margin-bottom: 15px; }
+.field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.field input, .field select, .field textarea { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 12px; font-size: 13px; outline: none; font-family: inherit; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.btn { width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; border: 0; background: #1d4ed8; color: #fff; }
+.success-box { display: none; background: #dcfce7; color: #166534; border-radius: 10px; padding: 16px; margin-top: 18px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header class="top-header">
+    <div class="brand-icon"><i class="fa-solid fa-house-circle-check"></i></div>
+    <strong>Athi Soko Connect</strong>
+</header>
+
+<main class="container">
+    <div class="card">
+        <h2 style="margin-bottom:18px;">Request a Booking</h2>
+
+        <div class="service-summary" id="serviceSummary"></div>
+
+        <form id="bookingForm">
+            <div class="field"><label>Your Name</label><input type="text" id="residentName" required></div>
+            <div class="field"><label>Phone Number</label><input type="tel" id="residentPhone" required></div>
+            <div class="two-col">
+                <div class="field"><label>Preferred Date</label><input type="date" id="date" required></div>
+                <div class="field"><label>Preferred Time</label><input type="time" id="time" required></div>
+            </div>
+            <div class="field"><label>Court / Location</label><input type="text" id="court" required></div>
+            <div class="field"><label>Notes (optional)</label><textarea id="notes" rows="3" placeholder="Any details the provider should know"></textarea></div>
+            <button type="submit" class="btn"><i class="fa-solid fa-calendar-check"></i> Submit Booking Request</button>
+        </form>
+
+        <div class="success-box" id="successBox">
+            <i class="fa-solid fa-circle-check"></i> Booking request sent! Status: <strong>Pending</strong>.
+            Track it on your <a href="my-bookings.html" style="color:#166534;font-weight:600;">My Bookings</a> page.
+        </div>
+    </div>
+</main>
+
+<script src="shared-data.js"></script>
+<script>
+const params = new URLSearchParams(window.location.search);
+let service = null;
+let provider = null;
+
+/* Supports arriving either with a serviceId (from services-search.html)
+   or a providerId only (from provider-profile.html) */
+const serviceId = params.get("id") || params.get("serviceId");
+const providerIdParam = params.get("providerId");
+
+if (serviceId) {
+    service = getServices().find(s => s.id === Number(serviceId));
+    provider = service ? getProvider(service.providerId) : null;
+} else if (providerIdParam) {
+    provider = getProvider(providerIdParam);
+    service = getServicesByProvider(provider.id)[0] || null;
+}
+
+/* Fall back to whatever was stored by the original services-search.js */
+if (!service) {
+    try {
+        const stored = JSON.parse(localStorage.getItem("selectedService"));
+        if (stored) {
+            service = { id: stored.id, name: stored.name, providerId: null };
+            provider = { businessName: stored.provider, court: stored.court };
+        }
+    } catch (e) {}
+}
+
+document.getElementById("serviceSummary").innerHTML = service ? `
+    <i class="fa-solid fa-briefcase"></i>
+    <div>
+        <div class="name">${escapeHTML(service.name)}</div>
+        <div class="provider">${escapeHTML(provider ? provider.businessName : "")}</div>
+    </div>
+` : "<p>No service selected. Please book from the services page.</p>";
+
+if (provider && provider.court) {
+    document.getElementById("court").value = provider.court;
+}
+
+document.getElementById("bookingForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    if (!service) return;
+
+    createBooking({
+        serviceId: service.id,
+        providerId: service.providerId || (provider ? provider.id : null),
+        serviceName: service.name,
+        residentName: document.getElementById("residentName").value.trim(),
+        residentPhone: document.getElementById("residentPhone").value.trim(),
+        court: document.getElementById("court").value.trim(),
+        date: document.getElementById("date").value,
+        time: document.getElementById("time").value,
+        notes: document.getElementById("notes").value.trim()
+    });
+
+    document.getElementById("bookingForm").style.display = "none";
+    document.getElementById("successBox").style.display = "block";
+});
+</script>
+</body>
+</html>

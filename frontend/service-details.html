@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Service Details | Athi Soko Connect</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+        body {
+            font-family: Poppins, sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .provider-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .verified {
+            color: #166534;
+            background: #dcfce7;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .rating {
+            color: #f59e0b;
+        }
+
+        .price {
+            color: #166534;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        button {
+            padding: 11px 18px;
+            border-radius: 7px;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: #166534;
+            color: white;
+        }
+
+        .danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="container">
+
+    <div class="card" id="providerProfile">
+        Loading provider...
+    </div>
+
+    <div class="card">
+
+        <h2>Services Offered</h2>
+
+        <div id="providerServices">
+            Loading services...
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Availability</h2>
+
+        <div id="availability">
+            Loading availability...
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Reviews</h2>
+
+        <div id="reviews">
+            Loading reviews...
+        </div>
+
+    </div>
+
+</main>
+
+<script src="service-details.js"></script>
+
+</body>
+</html>

@@ -1,4 +1,3 @@
-```javascript
 /*
  * ============================================================
  * ATHI ESTATE CONNECT
@@ -274,6 +273,9 @@ const minPrice =
 const maxPrice =
     document.getElementById("maxPrice");
 
+const priceHint =
+    document.getElementById("priceHint");
+
 const verifiedFilter =
     document.getElementById("verifiedFilter");
 
@@ -422,6 +424,74 @@ function attachEventListeners() {
 
 
 /* ============================================================
+   PRICE RANGE VALIDATION
+   ============================================================
+
+   Checks whether min/max price form a valid range. When the
+   range is invalid (min > max), the price filter is skipped
+   entirely rather than silently returning zero or wrong
+   results, and a hint is shown next to the inputs.
+   ============================================================ */
+
+function getValidatedPriceRange() {
+
+    const minimum =
+        parseFloat(minPrice.value);
+
+
+    const maximum =
+        parseFloat(maxPrice.value);
+
+
+    const hasMin = !isNaN(minimum);
+
+    const hasMax = !isNaN(maximum);
+
+
+    const isInvalidRange =
+        hasMin && hasMax && minimum > maximum;
+
+
+    if (priceHint) {
+
+        priceHint.style.display =
+            isInvalidRange ? "block" : "none";
+
+    }
+
+
+    if (maxPrice.setCustomValidity) {
+
+        maxPrice.setCustomValidity(
+            isInvalidRange
+                ? "Max should be greater than min."
+                : ""
+        );
+
+    }
+
+
+    if (isInvalidRange) {
+
+        return {
+            minimum: NaN,
+            maximum: NaN,
+            isInvalidRange: true
+        };
+
+    }
+
+
+    return {
+        minimum,
+        maximum,
+        isInvalidRange: false
+    };
+
+}
+
+
+/* ============================================================
    APPLY FILTERS
    ============================================================ */
 
@@ -441,12 +511,11 @@ function applyFilters() {
         courtFilter.value;
 
 
-    const minimum =
-        parseFloat(minPrice.value);
-
-
-    const maximum =
-        parseFloat(maxPrice.value);
+    const {
+        minimum,
+        maximum,
+        isInvalidRange
+    } = getValidatedPriceRange();
 
 
     const verifiedOnly =
@@ -499,18 +568,22 @@ function applyFilters() {
 
         /*
          * MINIMUM PRICE
+         * (skipped entirely while the range is invalid)
          */
 
         const matchesMinimum =
+            isInvalidRange ||
             isNaN(minimum) ||
             service.price >= minimum;
 
 
         /*
          * MAXIMUM PRICE
+         * (skipped entirely while the range is invalid)
          */
 
         const matchesMaximum =
+            isInvalidRange ||
             isNaN(maximum) ||
             service.price <= maximum;
 
@@ -692,7 +765,7 @@ function createServiceCard(service) {
 
             ? `
                 <span class="verified">
-                    <i class="fa-solid fa-circle-check"></i>
+                    <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
                     Verified
                 </span>
               `
@@ -716,7 +789,7 @@ function createServiceCard(service) {
 
         <div class="service-image">
 
-            <i class="fa-solid ${service.icon}"></i>
+            <i class="fa-solid ${service.icon}" aria-hidden="true"></i>
 
         </div>
 
@@ -744,10 +817,12 @@ function createServiceCard(service) {
 
             <div class="rating">
 
-                ${generateStars(service.rating)}
+                <span aria-hidden="true">
+                    ${generateStars(service.rating)}
+                </span>
 
                 <span>
-                    ${service.rating}
+                    ${service.rating} out of 5
                     (${service.reviews} reviews)
                 </span>
 
@@ -782,7 +857,7 @@ function createServiceCard(service) {
 
                 <div class="location">
 
-                    <i class="fa-solid fa-location-dot"></i>
+                    <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
 
                     ${escapeHTML(service.court)}
 
@@ -793,7 +868,7 @@ function createServiceCard(service) {
 
             <div class="location" style="margin-top:8px;">
 
-                <i class="fa-solid ${availabilityIcon}"></i>
+                <i class="fa-solid ${availabilityIcon}" aria-hidden="true"></i>
 
                 ${availabilityText}
 
@@ -803,11 +878,12 @@ function createServiceCard(service) {
             <div class="card-actions">
 
                 <button
+                    type="button"
                     class="btn btn-outline"
                     onclick="viewService(${service.id})"
                 >
 
-                    <i class="fa-solid fa-eye"></i>
+                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
 
                     View Details
 
@@ -815,12 +891,13 @@ function createServiceCard(service) {
 
 
                 <button
+                    type="button"
                     class="btn btn-primary"
                     onclick="bookService(${service.id})"
                     ${service.available ? "" : "disabled"}
                 >
 
-                    <i class="fa-solid fa-calendar-plus"></i>
+                    <i class="fa-solid fa-calendar-plus" aria-hidden="true"></i>
 
                     Book Service
 
@@ -1004,6 +1081,18 @@ function clearAllFilters() {
 
     maxPrice.value = "";
 
+    if (maxPrice.setCustomValidity) {
+
+        maxPrice.setCustomValidity("");
+
+    }
+
+    if (priceHint) {
+
+        priceHint.style.display = "none";
+
+    }
+
     verifiedFilter.checked = false;
 
     availableFilter.checked = false;
@@ -1078,4 +1167,3 @@ function debounce(callback, delay) {
     };
 
 }
-```

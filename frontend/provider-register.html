@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register as a Provider | Athi Soko Connect</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Poppins", sans-serif; background: #f4f7fb; color: #1f2937; }
+a { text-decoration: none; }
+.top-header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon { width: 45px; height: 45px; border-radius: 12px; background: #1e3a8a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.brand h1 { font-size: 18px; color: #1e3a8a; }
+.brand span { display: block; font-size: 11px; color: #6b7280; }
+.container { max-width: 640px; margin: 40px auto; padding: 0 20px; }
+.card { background: #fff; border-radius: 14px; border: 1px solid #e5e7eb; padding: 30px; }
+.card h2 { font-size: 20px; margin-bottom: 6px; }
+.card p.sub { color: #6b7280; font-size: 13px; margin-bottom: 24px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.field input, .field select, .field textarea {
+    width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 12px; font-size: 13px; outline: none; font-family: inherit;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: #1d4ed8; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.btn { width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; border: 1px solid transparent; background: #1d4ed8; color: #fff; margin-top: 6px; }
+.success-box { display: none; background: #dcfce7; color: #166534; border-radius: 10px; padding: 16px; margin-top: 18px; font-size: 13px; }
+.note { font-size: 12px; color: #6b7280; margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<header class="top-header">
+    <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-house-circle-check"></i></div>
+        <div><h1>Athi Soko Connect</h1><span>Athi Highway Estate Community Marketplace</span></div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="card">
+        <h2>Register as a Service Provider</h2>
+        <p class="sub">Create your provider profile. Your business will be reviewed by estate admins before it appears publicly (Pending → Under Review → Verified).</p>
+
+        <form id="registerForm">
+            <div class="field">
+                <label for="businessName">Business Name</label>
+                <input type="text" id="businessName" required>
+            </div>
+
+            <div class="field">
+                <label for="ownerName">Owner / Contact Person</label>
+                <input type="text" id="ownerName" required>
+            </div>
+
+            <div class="two-col">
+                <div class="field">
+                    <label for="category">Service Category</label>
+                    <select id="category" required>
+                        <option value="">Select category</option>
+                        <option>Cleaning</option><option>Plumbing</option><option>Electrical</option>
+                        <option>Security</option><option>Gardening</option><option>Beauty</option>
+                        <option>Transport</option><option>Repairs</option><option>Food</option>
+                        <option>Tutoring</option><option>Technology</option><option>Laundry</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="court">Court / Location</label>
+                    <select id="court" required>
+                        <option value="">Select location</option>
+                        <option>Riverside</option><option>Phase I</option><option>Phase II</option>
+                        <option>Central</option><option>Estate-wide</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="field">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="hours">Operating Hours</label>
+                <input type="text" id="hours" placeholder="e.g. Mon–Sat, 8:00am – 6:00pm" required>
+            </div>
+
+            <div class="field">
+                <label for="description">Business Description</label>
+                <textarea id="description" rows="4" required></textarea>
+            </div>
+
+            <button type="submit" class="btn"><i class="fa-solid fa-user-plus"></i> Submit for Review</button>
+        </form>
+
+        <div class="success-box" id="successBox">
+            <i class="fa-solid fa-circle-check"></i>
+            Registration submitted! Your status is <strong>Pending</strong>.
+            Go to your <a href="provider-dashboard.html" id="dashboardLink" style="color:#166534;font-weight:600;">Provider Dashboard</a> to add services and track your verification.
+        </div>
+
+        <p class="note">Already registered? <a href="provider-dashboard.html" style="color:#1d4ed8;">Go to your dashboard</a>.</p>
+    </div>
+</main>
+
+<script src="shared-data.js"></script>
+<script>
+document.getElementById("registerForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const provider = registerProvider({
+        businessName: document.getElementById("businessName").value.trim(),
+        ownerName: document.getElementById("ownerName").value.trim(),
+        category: document.getElementById("category").value,
+        court: document.getElementById("court").value,
+        phone: document.getElementById("phone").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        hours: document.getElementById("hours").value.trim(),
+        description: document.getElementById("description").value.trim()
+    });
+
+    /* Remember which provider is "logged in" for the dashboard demo */
+    localStorage.setItem("asc_currentProviderId", provider.id);
+
+    document.getElementById("registerForm").style.display = "none";
+    document.getElementById("successBox").style.display = "block";
+});
+</script>
+</body>
+</html>

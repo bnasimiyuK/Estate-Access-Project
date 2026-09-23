@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // -------------------------------
   // 1️⃣ Get token and role info
   // -------------------------------
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("token");
   const role = localStorage.getItem("role");
   const roleId = localStorage.getItem("roleId");
 

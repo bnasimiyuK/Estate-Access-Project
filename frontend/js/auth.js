@@ -42,7 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // Universal API Fetch with Token & Refresh
 // =====================================
 export async function apiFetch(url, options = {}) {
-  const accessToken = localStorage.getItem("accessToken");
+  // NOTE: login.js stores the token under the key "token", not
+  // "accessToken" — this must match exactly or every call below
+  // wipes the session and bounces back to login.
+  const accessToken = localStorage.getItem("token");
   const refreshToken = localStorage.getItem("refreshToken");
 
   if (!accessToken) {
@@ -79,7 +82,8 @@ export async function apiFetch(url, options = {}) {
       }
 
       const data = await refreshRes.json();
-      localStorage.setItem("accessToken", data.accessToken);
+      // Keep this consistent with the key used above.
+      localStorage.setItem("token", data.accessToken);
 
       // Retry original request with new token
       options.headers["Authorization"] = `Bearer ${data.accessToken}`;
@@ -103,7 +107,7 @@ export async function apiFetch(url, options = {}) {
 // Protect Page Helper
 // =====================================
 export function protectPage() {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("token");
   if (!accessToken) {
     alert("Authentication token missing. Please log in.");
     localStorage.clear();
