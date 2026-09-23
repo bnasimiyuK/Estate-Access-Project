@@ -182,9 +182,11 @@ function renderAthiConnectSidebar() {
         {
             category: "Provider Portal",
             items: [
+               { name: "Provider Profile", href: "provider-profile.html", icon: "" },
                 { name: "Provider Dashboard", href: "provider-dashboard.html", icon: "📊" },
                 { name: "Manage Services & Fees", href: "provider-services.html", icon: "🛠️" },
                 { name: "Register Business / Provider", href: "provider-register.html", icon: "📋" }
+               
             ]
         },
         {
