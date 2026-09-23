@@ -1,3 +1,13 @@
+/* ============================================================
+   ADMIN DASHBOARD
+   Requires shared-api.js to be loaded first.
+   ============================================================ */
+
+let providersCache = [];
+let bookingsCache = [];
+let complaintsCache = [];
+let referralsCache = [];
+
 document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -11,22 +21,42 @@ function badgeClass(status) {
     return "badge-" + status.toLowerCase().replace(/\s+/g, "");
 }
 
-function renderStats() {
-    const providers = getProviders();
-    const bookings = getBookings();
-    const complaints = getComplaints();
+document.addEventListener("DOMContentLoaded", loadAll);
 
+async function loadAll() {
+    try {
+        [providersCache, bookingsCache, complaintsCache, referralsCache] = await Promise.all([
+            getProviders(),
+            getBookings(),
+            getComplaints(),
+            getReferrals()
+        ]);
+
+        renderStats();
+        renderProviders();
+        renderBookings();
+        renderComplaints();
+        renderReferrals();
+        renderPerformance();
+
+    } catch (error) {
+        document.getElementById("providersBody").innerHTML =
+            `<tr><td colspan="5" class="state error">Couldn't load dashboard data: ${escapeHTML(error.message)}</td></tr>`;
+    }
+}
+
+function renderStats() {
     document.getElementById("statRow").innerHTML = `
-        <div class="stat-card"><div class="num">${providers.length}</div><div class="label">Total Providers</div></div>
-        <div class="stat-card"><div class="num">${providers.filter(p => p.verificationStatus === "Pending").length}</div><div class="label">Pending Verification</div></div>
-        <div class="stat-card"><div class="num">${bookings.length}</div><div class="label">Total Bookings</div></div>
-        <div class="stat-card"><div class="num">${complaints.filter(c => c.status === "open").length}</div><div class="label">Open Complaints</div></div>
+        <div class="stat-card"><div class="num">${providersCache.length}</div><div class="label">Total Providers</div></div>
+        <div class="stat-card"><div class="num">${providersCache.filter(p => p.verificationStatus === "Pending").length}</div><div class="label">Pending Verification</div></div>
+        <div class="stat-card"><div class="num">${bookingsCache.length}</div><div class="label">Total Bookings</div></div>
+        <div class="stat-card"><div class="num">${complaintsCache.filter(c => c.status === "open").length}</div><div class="label">Open Complaints</div></div>
     `;
 }
 
 function renderProviders() {
     const statuses = ["Pending", "Under Review", "Verified", "Suspended"];
-    document.getElementById("providersBody").innerHTML = getProviders().map(p => `
+    document.getElementById("providersBody").innerHTML = providersCache.map(p => `
         <tr>
             <td><strong>${escapeHTML(p.businessName)}</strong><br><span style="color:#9ca3af;font-size:11px;">${escapeHTML(p.ownerName)}</span></td>
             <td>${escapeHTML(p.category)}</td>
@@ -41,15 +71,22 @@ function renderProviders() {
     `).join("");
 }
 
-function changeStatus(providerId, status) {
-    setVerificationStatus(providerId, status);
-    renderProviders();
-    renderStats();
+async function changeStatus(providerId, status) {
+    try {
+        await setVerificationStatus(providerId, status);
+        providersCache = await getProviders();
+        renderProviders();
+        renderStats();
+        renderPerformance();
+    } catch (error) {
+        alert("Couldn't update status: " + error.message);
+        renderProviders();
+    }
 }
 
 function renderBookings() {
-    document.getElementById("bookingsBody").innerHTML = getBookings().map(b => {
-        const provider = getProvider(b.providerId);
+    document.getElementById("bookingsBody").innerHTML = bookingsCache.map(b => {
+        const provider = providersCache.find(p => p.id === b.providerId);
         return `
         <tr>
             <td>${escapeHTML(b.residentName)}</td>
@@ -58,12 +95,12 @@ function renderBookings() {
             <td>${escapeHTML(b.date)}</td>
             <td><span class="badge ${badgeClass(b.status)}">${b.status}</span></td>
         </tr>
-    `; }).join("");
+    `; }).join("") || `<tr><td colspan="5" class="state">No bookings yet.</td></tr>`;
 }
 
 function renderComplaints() {
-    document.getElementById("complaintsBody").innerHTML = getComplaints().map(c => {
-        const provider = getProvider(c.providerId);
+    document.getElementById("complaintsBody").innerHTML = complaintsCache.map(c => {
+        const provider = providersCache.find(p => p.id === c.providerId);
         return `
         <tr>
             <td>${escapeHTML(c.residentName)}</td>
@@ -73,18 +110,24 @@ function renderComplaints() {
             <td><span class="badge ${badgeClass(c.status)}">${c.status}</span></td>
             <td>${c.status === "open" ? `<button class="btn" onclick="markResolved(${c.id})">Resolve</button>` : "—"}</td>
         </tr>
-    `; }).join("");
+    `; }).join("") || `<tr><td colspan="6" class="state">No complaints logged.</td></tr>`;
 }
 
-function markResolved(id) {
-    resolveComplaint(id);
-    renderComplaints();
-    renderStats();
+async function markResolved(id) {
+    try {
+        await resolveComplaint(id);
+        complaintsCache = await getComplaints();
+        renderComplaints();
+        renderStats();
+        renderPerformance();
+    } catch (error) {
+        alert("Couldn't resolve complaint: " + error.message);
+    }
 }
 
 function renderReferrals() {
-    document.getElementById("referralsBody").innerHTML = getReferrals().map(r => {
-        const provider = getProvider(r.providerId);
+    document.getElementById("referralsBody").innerHTML = referralsCache.map(r => {
+        const provider = providersCache.find(p => p.id === r.providerId);
         return `
         <tr>
             <td>${escapeHTML(provider ? provider.businessName : "—")}</td>
@@ -93,17 +136,14 @@ function renderReferrals() {
             <td>${escapeHTML(r.referredContact)}</td>
             <td><span class="badge ${badgeClass(r.status)}">${r.status}</span></td>
         </tr>
-    `; }).join("");
+    `; }).join("") || `<tr><td colspan="5" class="state">No referrals logged.</td></tr>`;
 }
 
 function renderPerformance() {
-    const bookings = getBookings();
-    const complaints = getComplaints();
-
-    document.getElementById("performanceBody").innerHTML = getProviders().map(p => {
-        const providerBookings = bookings.filter(b => b.providerId === p.id);
+    document.getElementById("performanceBody").innerHTML = providersCache.map(p => {
+        const providerBookings = bookingsCache.filter(b => b.providerId === p.id);
         const completed = providerBookings.filter(b => b.status === "completed").length;
-        const providerComplaints = complaints.filter(c => c.providerId === p.id).length;
+        const providerComplaints = complaintsCache.filter(c => c.providerId === p.id).length;
 
         return `
         <tr>
@@ -113,12 +153,5 @@ function renderPerformance() {
             <td>${completed}</td>
             <td>${providerComplaints}</td>
         </tr>
-    `; }).join("");
+    `; }).join("") || `<tr><td colspan="5" class="state">No providers yet.</td></tr>`;
 }
-
-renderStats();
-renderProviders();
-renderBookings();
-renderComplaints();
-renderReferrals();
-renderPerformance();
