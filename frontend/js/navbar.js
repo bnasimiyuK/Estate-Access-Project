@@ -161,7 +161,7 @@ function renderAthiConnectSidebar() {
         {
             category: "Core Navigation",
             items: [
-                { name: "Dashboard", href: "residentdashboardoverview.html", icon: "🏠" },
+                { name: "Dashboard", href: "admin-dashboard.html", icon: "🏠" },
                 { name: "Estate Announcements", href: "announcements.html", icon: "📢" }
             ]
         },
