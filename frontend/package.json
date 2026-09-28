@@ -15,5 +15,8 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mssql": "^12.0.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
   }
 }
