@@ -132,16 +132,7 @@ app.get("/", (req, res) => {
 // ================================
 // RESIDENTS COUNT ROUTE
 // ================================
-app.get("/api/residents/count", async (req, res) => {
-  try {
-    const pool = await sql.connect(dbConfig);
-    const result = await pool.request().query("SELECT COUNT(*) AS totalResidents FROM Residents");
-    res.json({ success: true, totalResidents: result.recordset[0].totalResidents });
-  } catch (error) {
-    console.error("Error fetching residents count:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-});
+
 
 // ================================
 // MEMBERSHIP REQUEST CRUD + AUTO SYNC

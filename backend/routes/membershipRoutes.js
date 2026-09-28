@@ -319,5 +319,22 @@ router.delete("/delete/:id", async (req, res) => {
 // ⏱️ AUTO SYNC EVERY 60 SECONDS
 // ==========================================
 setInterval(syncMembershipTables, 60000);
-
+// ==========================================
+// 🟨 GET PENDING MEMBERSHIP REQUESTS
+// API: /api/membership/pending
+// ==========================================
+router.get("/pending", async (req, res) => {
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool.request().query(`
+      SELECT * FROM MembershipRequests 
+      WHERE Status = 'Pending'
+      ORDER BY RequestedAt DESC
+    `);
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("❌ Error fetching pending memberships:", err);
+    res.status(500).json({ success: false, message: "Failed to fetch pending memberships" });
+  }
+});
 export default router;

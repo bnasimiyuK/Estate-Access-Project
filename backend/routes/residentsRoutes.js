@@ -7,6 +7,20 @@ import { verifyToken } from "../middleware/verifyToken.js";
 const router = express.Router();
 
 // ==========================================
+// ✅ GET /count — MUST be before /:id, otherwise Express treats "count" as an ID
+// ==========================================
+router.get("/count", async (req, res) => {
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool.request().query("SELECT COUNT(*) AS totalResidents FROM Residents");
+    res.json({ success: true, totalResidents: result.recordset[0].totalResidents });
+  } catch (err) {
+    console.error("Error fetching residents count:", err);
+    res.status(500).json({ success: false, message: "Failed to count residents" });
+  }
+});
+
+// ==========================================
 // ✅ GET ALL RESIDENTS (API: /api/residents/all)
 // ==========================================
 router.get("/all", verifyToken, async (req, res) => {
